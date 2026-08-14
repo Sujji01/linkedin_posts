@@ -121,9 +121,9 @@ export const Hero: React.FC = () => {
 
       // Slow breathing ambient radial glow
       gsap.to('.die-ambient-glow', {
-        opacity: 0.3,
-        scale: 1.1,
-        duration: 4.0,
+        opacity: 0.35,
+        scale: 1.12,
+        duration: 4.5,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut',
@@ -131,38 +131,63 @@ export const Hero: React.FC = () => {
 
       // Slow breathing silicon carrier border glow
       gsap.to('.die-carrier-frame', {
-        borderColor: 'rgba(var(--cyan), 0.7)',
-        boxShadow: '0 0 24px rgba(var(--cyan), 0.25)',
-        duration: 4.0,
+        borderColor: 'rgba(var(--cyan), 0.85)',
+        boxShadow: '0 0 28px rgba(var(--cyan), 0.35)',
+        duration: 4.5,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut',
       });
 
-      // Slow, smooth pin leads wave glow:
-      // Bank 0 (4 pins): Slow Cyan glow -> Soft Dim -> Slow Green glow -> Soft Dim
-      gsap.to('.die-pin-bank-0', {
-        keyframes: [
-          { stroke: 'rgb(var(--cyan))', opacity: 1, filter: 'drop-shadow(0 0 8px rgba(var(--cyan), 0.85))', duration: 3.8 },
-          { stroke: 'rgb(var(--line))', opacity: 0.4, filter: 'drop-shadow(0 0 2px rgba(var(--cyan), 0.2))', duration: 3.2 },
-          { stroke: 'rgb(var(--green))', opacity: 0.95, filter: 'drop-shadow(0 0 8px rgba(var(--green), 0.85))', duration: 3.8 },
-          { stroke: 'rgb(var(--line))', opacity: 0.4, filter: 'none', duration: 3.2 },
-        ],
-        repeat: -1,
-        ease: 'sine.inOut',
-      });
+      // Smooth continuous timeline for Bank 0 pins
+      const tlBank0 = gsap.timeline({ repeat: -1, yoyo: true });
+      tlBank0
+        .to('.die-pin-bank-0', {
+          stroke: 'rgb(var(--cyan))',
+          opacity: 1,
+          filter: 'drop-shadow(0 0 9px rgba(var(--cyan), 0.85))',
+          duration: 4.5,
+          ease: 'sine.inOut',
+        })
+        .to('.die-pin-bank-0', {
+          stroke: 'rgb(var(--green))',
+          opacity: 0.9,
+          filter: 'drop-shadow(0 0 9px rgba(var(--green), 0.8))',
+          duration: 4.5,
+          ease: 'sine.inOut',
+        })
+        .to('.die-pin-bank-0', {
+          stroke: 'rgb(var(--cyan-dim))',
+          opacity: 0.3,
+          filter: 'drop-shadow(0 0 2px rgba(var(--cyan), 0.2))',
+          duration: 3.5,
+          ease: 'sine.inOut',
+        });
 
-      // Bank 1 (alternate 4 pins): Soft Dim -> Slow Amber glow -> Soft Dim -> Slow Cyan glow
-      gsap.to('.die-pin-bank-1', {
-        keyframes: [
-          { stroke: 'rgb(var(--line))', opacity: 0.4, filter: 'none', duration: 3.2 },
-          { stroke: 'rgb(var(--amber))', opacity: 0.9, filter: 'drop-shadow(0 0 8px rgba(var(--amber), 0.8))', duration: 3.8 },
-          { stroke: 'rgb(var(--line))', opacity: 0.4, filter: 'drop-shadow(0 0 2px rgba(var(--cyan), 0.2))', duration: 3.2 },
-          { stroke: 'rgb(var(--cyan))', opacity: 1, filter: 'drop-shadow(0 0 8px rgba(var(--cyan), 0.85))', duration: 3.8 },
-        ],
-        repeat: -1,
-        ease: 'sine.inOut',
-      });
+      // Smooth continuous timeline for Bank 1 pins
+      const tlBank1 = gsap.timeline({ repeat: -1, yoyo: true });
+      tlBank1
+        .to('.die-pin-bank-1', {
+          stroke: 'rgb(var(--amber))',
+          opacity: 0.9,
+          filter: 'drop-shadow(0 0 9px rgba(var(--amber), 0.8))',
+          duration: 4.5,
+          ease: 'sine.inOut',
+        })
+        .to('.die-pin-bank-1', {
+          stroke: 'rgb(var(--cyan))',
+          opacity: 1,
+          filter: 'drop-shadow(0 0 9px rgba(var(--cyan), 0.85))',
+          duration: 4.5,
+          ease: 'sine.inOut',
+        })
+        .to('.die-pin-bank-1', {
+          stroke: 'rgb(var(--cyan-dim))',
+          opacity: 0.3,
+          filter: 'drop-shadow(0 0 2px rgba(var(--cyan), 0.2))',
+          duration: 3.5,
+          ease: 'sine.inOut',
+        });
     },
     { scope: containerRef }
   );
@@ -305,9 +330,6 @@ export const Hero: React.FC = () => {
                     stroke={pin.initialStroke}
                     strokeWidth="2.5"
                     strokeLinecap="round"
-                    style={{
-                      transition: 'opacity 0.3s ease, filter 0.3s ease',
-                    }}
                   />
                 ))}
               </svg>
