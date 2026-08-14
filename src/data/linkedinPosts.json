@@ -5,42 +5,64 @@
     "publishedDate": "Aug 11, 2026",
     "postUrl": "https://www.linkedin.com/posts/sujithpolisetty_vlsi-physicaldesign-icc2-share-7492865587220566017-IrdO/",
     "mediaUrl": "https://media.licdn.com/dms/image/v2/D5622AQE-hQJznuBwFA/feedshare-shrink_1280/B56Z_wBjGOHcAM-/0/1786438365924?e=2147483647&v=beta&t=YWDdbaIYlicZ8WIMSsWVDejnEdJsGfEqcrMFDeN3Eto",
-    "likesCount": 18,
-    "commentsCount": 4,
+    "likesCount": 24,
+    "commentsCount": 6,
     "tags": ["VLSI", "PhysicalDesign", "ICC2", "FusionCompiler", "Synopsys", "TimingClosure"],
     "keyHighlight": "30 Days of VLSI · Day 26: ICC2 & Fusion Compiler Commands"
   },
   {
-    "id": "post-1",
-    "content": "Excited to share insights on Clock Tree Synthesis (CTS) and timing closure in 32nm ASIC implementation. Balancing skew vs insertion delay while fixing hold violations with multi-VT standard cells.",
-    "publishedDate": "Aug 2026",
+    "id": "post-cts-day25",
+    "content": "🚀 30 Days of VLSI Physical Design | Day 25/30: Clock Tree Synthesis (CTS) – Skew, Latency & NDR Rules!\n\nBalancing global clock skew vs insertion delay in our 32nm RISC-V implementation. Used NDR 2W2S routing on clock trunks to eliminate cross-talk jitter and multi-VT buffer sizing for hold closure.\n\nKey metric: Maintained global clock skew <80ps across all PVT corners.",
+    "publishedDate": "Aug 10, 2026",
     "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
     "mediaUrl": "/activity-1.jpeg",
-    "likesCount": 42,
+    "likesCount": 38,
     "commentsCount": 8,
-    "tags": ["PhysicalDesign", "CTS", "VLSI", "Synopsys", "TimingClosure"],
-    "keyHighlight": "Clock Tree Synthesis & Skew Optimization"
+    "tags": ["CTS", "ClockTree", "PhysicalDesign", "Synopsys", "TimingClosure"],
+    "keyHighlight": "30 Days of VLSI · Day 25: CTS & Clock Skew Optimization"
   },
   {
-    "id": "post-2",
-    "content": "Completed RTL-to-GDSII tape-out simulation of a 32-bit RISC-V processor core using Synopsys Fusion Compiler & ICC2. Clean DRC/LVS signoff with zero setup/hold timing violations.",
-    "publishedDate": "Jul 2026",
+    "id": "post-sta-day24",
+    "content": "🚀 30 Days of VLSI Physical Design | Day 24/30: Static Timing Analysis (STA) – Fixing Hold Violations Post-Routing!\n\nDebugging multi-corner multi-mode (MCMM) timing in PrimeTime across SS (0.95V, 125°C) and FF (1.25V, -40°C). Strategic high-VT delay buffer insertion on fast data paths cured hold without touching setup slack.\n\nResult: 0ns hold violation with +0.22ns positive setup slack.",
+    "publishedDate": "Aug 09, 2026",
     "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
     "mediaUrl": "/activity-2.jpeg",
-    "likesCount": 68,
-    "commentsCount": 12,
-    "tags": ["RISCV", "TapeOut", "ICC2", "FusionCompiler", "DRC_LVS"],
-    "keyHighlight": "RISC-V 32nm Physical Implementation"
+    "likesCount": 52,
+    "commentsCount": 11,
+    "tags": ["STA", "PrimeTime", "SetupHold", "TimingAnalysis", "VLSI"],
+    "keyHighlight": "30 Days of VLSI · Day 24: STA & Hold Timing Closure"
   },
   {
-    "id": "post-3",
-    "content": "Presented our autonomous hardware system at National Level Technical Symposia. Demonstrating real-time edge processing and robust silicon-level power planning.",
-    "publishedDate": "Jun 2026",
+    "id": "post-floorplanning-day23",
+    "content": "🚀 30 Days of VLSI Physical Design | Day 23/30: Floorplanning & Power Mesh – Mitigating Dynamic IR Drop!\n\nMacro placement sets 70% of tape-out quality. Placed memory macros on core periphery with 12µm placement halos, low-resistance top-metal straps (M7/M8), and verified dynamic IR drop under 2.8% of VDD.\n\nKey rule: Never route high-speed signals across macro boundaries.",
+    "publishedDate": "Aug 08, 2026",
     "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
     "mediaUrl": "/activity-3.jpeg",
-    "likesCount": 85,
-    "commentsCount": 15,
-    "tags": ["Hardware", "Semiconductor", "Innovations", "Electronics"],
-    "keyHighlight": "Hardware Showcase & Recognition"
+    "likesCount": 61,
+    "commentsCount": 14,
+    "tags": ["Floorplanning", "PowerMesh", "IRDrop", "PDN", "PhysicalDesign"],
+    "keyHighlight": "30 Days of VLSI · Day 23: Floorplan & Power Grid Synthesis"
+  },
+  {
+    "id": "post-placement-day22",
+    "content": "🚀 30 Days of VLSI Physical Design | Day 22/30: Standard Cell Placement – Wirelength & Congestion Reduction!\n\nAnalyzing routing overflow using GCell heatmaps in Synopsys ICC2. Applied partial density screens (60%) around congested ALU multiplexers to disperse cell clusters and reduced total HPWL wirelength by 10%.\n\nFlow: Global placement ➔ Congestion analysis ➔ Legalization ➔ Detailed placement.",
+    "publishedDate": "Aug 07, 2026",
+    "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
+    "mediaUrl": "/activity-4.jpeg",
+    "likesCount": 44,
+    "commentsCount": 9,
+    "tags": ["Placement", "Congestion", "ICC2", "Wirelength", "VLSI"],
+    "keyHighlight": "30 Days of VLSI · Day 22: Placement & Congestion Control"
+  },
+  {
+    "id": "post-signoff-day21",
+    "content": "🚀 30 Days of VLSI Physical Design | Day 21/30: Physical Verification – DRC, LVS & Antenna Signoff!\n\nOvercoming process antenna rule violations on long interconnect tracks. Applied metal layer hopping and inserted reverse-biased antenna diode cells to protect transistor gate oxide prior to GDSII stream-out.\n\nSignoff status: 100% clean DRC & LVS verified.",
+    "publishedDate": "Aug 06, 2026",
+    "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
+    "mediaUrl": "/activity-1.jpeg",
+    "likesCount": 73,
+    "commentsCount": 16,
+    "tags": ["DRC", "LVS", "AntennaDiode", "Signoff", "GDSII"],
+    "keyHighlight": "30 Days of VLSI · Day 21: DRC/LVS & Antenna Verification"
   }
 ]

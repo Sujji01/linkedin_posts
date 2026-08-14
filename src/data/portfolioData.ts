@@ -438,19 +438,20 @@ export const BLOG_POSTS: BlogPost[] = [
     linkedInUrl: "https://www.linkedin.com/posts/sujithpolisetty_vlsi-physicaldesign-icc2-share-7492865587220566017-IrdO/"
   },
   {
-    id: "blog-1",
-    slug: "cts-skew-optimization-32nm",
-    title: "Clock Tree Synthesis (CTS) & Skew Optimization in 32nm ASIC Flow",
+    id: "blog-day25-cts-skew",
+    slug: "30-days-vlsi-day25-cts-skew",
+    title: "30 Days of VLSI (Day 25): Clock Tree Synthesis (CTS) & Skew Optimization in 32nm ASIC Flow",
     excerpt: "A deep dive into balancing global clock skew vs insertion delay, multi-VT buffer insertion strategies, and achieving robust post-CTS timing closure.",
     fullContent: [
+      "🚀 30 Days of VLSI Physical Design | Day 25/30: Clock Tree Synthesis (CTS) – Skew, Latency & NDR Rules!",
       "Clock Tree Synthesis (CTS) is the most critical juncture in the physical design flow. Prior to CTS, timing optimization relies on ideal clock models. Once real clock network routing and buffer trees are synthesized, clock skew and latency directly impact both setup and hold margins.",
       "In our 32nm RISC-V implementation, we adopted a balanced symmetric clock tree architecture. By setting strict target skew constraints (<80ps) and maximum transition limits (<100ps), we minimized clock uncertainty across sequential register banks.",
       "Key optimization techniques applied included Non-Default Routing Rules (NDR 2W2S) on critical clock trunk nets to shield high-frequency signals from cross-talk jitter, and strategically deploying Low-VT and Standard-VT clock inverters along the clock spine to minimize insertion delay variations across Process-Voltage-Temperature (PVT) corners."
     ],
     category: "CTS",
     readTime: "4 min read",
-    publishedDate: "Aug 2026",
-    tags: ["CTS", "ClockTree", "SynopsysICC2", "TimingClosure", "32nm"],
+    publishedDate: "Aug 10, 2026",
+    tags: ["CTS", "ClockTree", "SynopsysICC2", "TimingClosure", "32nm", "30DaysOfVLSI"],
     keyTakeaways: [
       "Target skew maintained under 80ps using balanced H-Tree/Mesh clock topologies.",
       "NDR double-width double-spacing rules applied to prevent cross-talk on clock trunks.",
@@ -460,19 +461,20 @@ export const BLOG_POSTS: BlogPost[] = [
     linkedInUrl: "https://www.linkedin.com/in/sujithpolisetty"
   },
   {
-    id: "blog-2",
-    slug: "mastering-sta-setup-hold-closure",
-    title: "Mastering Static Timing Analysis: Fixing Hold Violations Post-Routing",
+    id: "blog-day24-sta-hold",
+    slug: "30-days-vlsi-day24-sta-hold",
+    title: "30 Days of VLSI (Day 24): Static Timing Analysis (STA) – Fixing Hold Violations Post-Routing",
     excerpt: "How to fix setup and hold timing violations during post-route optimization without causing domino-effect degradation on critical clock paths.",
     fullContent: [
+      "🚀 30 Days of VLSI Physical Design | Day 24/30: Static Timing Analysis (STA) – Fixing Hold Violations Post-Routing!",
       "In deep sub-micron physical design, resolving hold violations during post-route optimization requires surgical precision. Because hold checks are frequency-independent and verified at the fastest process corner (min_delay), inserting delay buffers carelessly can introduce setup violations at the slow corner.",
       "During the signoff phase of our 1×3 Router project, we utilized PrimeTime to perform multi-scenario Static Timing Analysis across SS (0.95V, 125°C) and FF (1.25V, -40°C) corners simultaneously.",
       "By utilizing high-threshold voltage (HVT) delay cells with minimal capacitive load and performing useful clock skewing on non-critical launch registers, we eliminated 100% of negative hold slack while preserving a +0.22ns positive setup slack margin."
     ],
     category: "STA",
     readTime: "5 min read",
-    publishedDate: "Jul 2026",
-    tags: ["STA", "PrimeTime", "SetupHold", "TimingAnalysis", "Signoff"],
+    publishedDate: "Aug 09, 2026",
+    tags: ["STA", "PrimeTime", "SetupHold", "TimingAnalysis", "Signoff", "30DaysOfVLSI"],
     keyTakeaways: [
       "Simultaneous multi-corner multi-mode (MCMM) timing optimization.",
       "High-VT delay cell insertion on fast data paths to cure hold violations.",
@@ -482,19 +484,20 @@ export const BLOG_POSTS: BlogPost[] = [
     linkedInUrl: "https://www.linkedin.com/in/sujithpolisetty"
   },
   {
-    id: "blog-3",
-    slug: "floorplanning-power-mesh-ir-drop",
-    title: "Floorplanning & Power Grid Synthesis: Mitigating Dynamic IR Drop",
+    id: "blog-day23-floorplanning-ir-drop",
+    slug: "30-days-vlsi-day23-floorplanning-ir-drop",
+    title: "30 Days of VLSI (Day 23): Floorplanning & Power Grid Synthesis – Mitigating Dynamic IR Drop",
     excerpt: "Strategic macro placement, channel spacing, keep-out halos, and constructing low-resistance VDD/VSS power rings and stripes for robust power distribution.",
     fullContent: [
+      "🚀 30 Days of VLSI Physical Design | Day 23/30: Floorplanning & Power Mesh – Mitigating Dynamic IR Drop!",
       "The floorplan determines over 70% of the final tape-out quality. Poor macro placement or inadequate power mesh density will inevitably manifest as routing congestion and catastrophic IR drop failures during detailed routing.",
       "In our Floating Point Unit (FPU) design, we organized custom memory macros along the core periphery with pin orientations facing internal standard cell logic. We established 12µm halo keep-out zones around every macro boundary to prevent standard cell clustering in tight routing channels.",
       "The Power Distribution Network (PDN) was constructed utilizing upper metal layers (M7 and M8) for low-resistance global VDD/VSS straps, interconnected via dense via arrays to lower-layer power rails (M1). Dynamic IR drop was held under 2.8% of nominal core voltage."
     ],
     category: "Floorplanning",
     readTime: "6 min read",
-    publishedDate: "Jun 2026",
-    tags: ["Floorplan", "PowerMesh", "IRDrop", "PDN", "PhysicalDesign"],
+    publishedDate: "Aug 08, 2026",
+    tags: ["Floorplan", "PowerMesh", "IRDrop", "PDN", "PhysicalDesign", "30DaysOfVLSI"],
     keyTakeaways: [
       "Core utilization set to 68% optimal density for congestion-free routing.",
       "12µm placement halo barriers applied to prevent pin blockage around macro edges.",
@@ -504,41 +507,20 @@ export const BLOG_POSTS: BlogPost[] = [
     linkedInUrl: "https://www.linkedin.com/in/sujithpolisetty"
   },
   {
-    id: "blog-4",
-    slug: "drc-lvs-signoff-antenna-violations",
-    title: "DRC/LVS Physical Verification: Resolving Antenna & Density Rules",
-    excerpt: "Overcoming process antenna rule violations, metal density fill requirements, and achieving clean GDSII stream-out verification.",
-    fullContent: [
-      "Physical verification is the final gatekeeper before mask manufacturing. DRC (Design Rule Checking) and LVS (Layout Versus Schematic) ensure that the geometric shapes in GDSII accurately represent the netlist and obey foundry fabrication tolerances.",
-      "During signoff on our 32nm PDK, we encountered process antenna violations on long interconnect routes driving thin-gate oxide transistor inputs. To resolve these without altering timing paths, we applied automated metal layer hopping (jumping to higher metal layers close to the receiver) and inserted reverse-biased antenna diode standard cells.",
-      "Dummy metal fill insertion was completed with density gradient checks to satisfy planarization (CMP) constraints across all metal layers."
-    ],
-    category: "Signoff",
-    readTime: "4 min read",
-    publishedDate: "May 2026",
-    tags: ["DRC", "LVS", "AntennaDiode", "Signoff", "GDSII"],
-    keyTakeaways: [
-      "Antenna rule violations fixed using metal jumping and diode insertion.",
-      "100% LVS match verified between netlist schematic and streamed GDSII.",
-      "Dummy metal fill synthesis meeting chemical-mechanical planarization (CMP) rules."
-    ],
-    edaTools: ["Synopsys IC Validator", "Mentor Calibre", "ICC2"],
-    linkedInUrl: "https://www.linkedin.com/in/sujithpolisetty"
-  },
-  {
-    id: "blog-5",
-    slug: "placement-congestion-mitigation-icc2",
-    title: "Standard Cell Placement: Reducing Wirelength & Local Congestion",
+    id: "blog-day22-placement-congestion",
+    slug: "30-days-vlsi-day22-placement-congestion",
+    title: "30 Days of VLSI (Day 22): Standard Cell Placement – Reducing Wirelength & Local Congestion in ICC2",
     excerpt: "Techniques for controlling global placement density, routing overflow analysis with GR graphs, and reducing total half-perimeter wirelength (HPWL).",
     fullContent: [
+      "🚀 30 Days of VLSI Physical Design | Day 22/30: Standard Cell Placement – Wirelength & Congestion Reduction!",
       "Placement sets the structural foundation for clock and signal routing. If cell density in specific regions exceeds routing track availability, detailed routing will suffer from high runtime and DRC shorts.",
       "In our RISC-V physical implementation, initial global placement exhibited routing congestion in the ALU multiplexer logic cones. We addressed this by applying partial placement blockages (density screen of 60%) across congested routing channels and enabling timing-driven placement with effort high.",
       "This reduced Total Half-Perimeter Wirelength (HPWL) by 10% and completely resolved global routing overflow prior to clock tree synthesis."
     ],
     category: "Placement",
     readTime: "5 min read",
-    publishedDate: "Apr 2026",
-    tags: ["Placement", "Congestion", "ICC2", "Wirelength", "VLSI"],
+    publishedDate: "Aug 07, 2026",
+    tags: ["Placement", "Congestion", "ICC2", "Wirelength", "VLSI", "30DaysOfVLSI"],
     keyTakeaways: [
       "Routing overflow analyzed using GCell heatmaps in Synopsys ICC2.",
       "Partial density blockages utilized to disperse high-pin-count logic clusters.",
@@ -548,19 +530,43 @@ export const BLOG_POSTS: BlogPost[] = [
     linkedInUrl: "https://www.linkedin.com/in/sujithpolisetty"
   },
   {
-    id: "blog-6",
-    slug: "tcl-scripting-automation-physical-design",
-    title: "Automating EDA Workflows: Tcl Scripting for Timing Slack & Pin Constraints",
+    id: "blog-day21-drc-lvs-signoff",
+    slug: "30-days-vlsi-day21-drc-lvs-signoff",
+    title: "30 Days of VLSI (Day 21): Physical Verification Signoff – DRC, LVS & Antenna Diode Insertion",
+    excerpt: "Overcoming process antenna rule violations, metal density fill requirements, and achieving clean GDSII stream-out verification.",
+    fullContent: [
+      "🚀 30 Days of VLSI Physical Design | Day 21/30: Physical Verification – DRC, LVS & Antenna Signoff!",
+      "Physical verification is the final gatekeeper before mask manufacturing. DRC (Design Rule Checking) and LVS (Layout Versus Schematic) ensure that the geometric shapes in GDSII accurately represent the netlist and obey foundry fabrication tolerances.",
+      "During signoff on our 32nm PDK, we encountered process antenna violations on long interconnect routes driving thin-gate oxide transistor inputs. To resolve these without altering timing paths, we applied automated metal layer hopping (jumping to higher metal layers close to the receiver) and inserted reverse-biased antenna diode standard cells.",
+      "Dummy metal fill insertion was completed with density gradient checks to satisfy planarization (CMP) constraints across all metal layers."
+    ],
+    category: "Signoff",
+    readTime: "4 min read",
+    publishedDate: "Aug 06, 2026",
+    tags: ["DRC", "LVS", "AntennaDiode", "Signoff", "GDSII", "30DaysOfVLSI"],
+    keyTakeaways: [
+      "Antenna rule violations fixed using metal jumping and diode insertion.",
+      "100% LVS match verified between netlist schematic and streamed GDSII.",
+      "Dummy metal fill synthesis meeting chemical-mechanical planarization (CMP) rules."
+    ],
+    edaTools: ["Synopsys IC Validator", "Mentor Calibre", "ICC2"],
+    linkedInUrl: "https://www.linkedin.com/in/sujithpolisetty"
+  },
+  {
+    id: "blog-day20-tcl-scripting",
+    slug: "30-days-vlsi-day20-tcl-scripting",
+    title: "30 Days of VLSI (Day 20): Automating EDA Workflows – Tcl Scripting for Timing Slack & Pin Constraints",
     excerpt: "Writing robust Tcl procedures in Synopsys tool environments to automate slack reporting, ECO cell swaps, and pin placement constraints generation.",
     fullContent: [
+      "🚀 30 Days of VLSI Physical Design | Day 20/30: Automating EDA Workflows with Tcl Scripting!",
       "Proficiency in Tcl scripting is an indispensable superpower for physical design engineers. Command-line scripting enables automated regression runs, custom reporting, and rapid engineering change order (ECO) implementation.",
       "We developed modular Tcl scripts for Synopsys ICC2 and PrimeTime that automatically parse timing report collections, extract the top 50 worst setup/hold timing paths, and categorize them by clock domain and hierarchy.",
       "Additionally, we automated the generation of floorplan IO pin placement constraints based on top-level bus port lists, reducing manual pin assignment time from hours to seconds."
     ],
     category: "Scripting",
     readTime: "4 min read",
-    publishedDate: "Mar 2026",
-    tags: ["Tcl", "Scripting", "Automation", "ECO", "PrimeTime"],
+    publishedDate: "Aug 05, 2026",
+    tags: ["Tcl", "Scripting", "Automation", "ECO", "PrimeTime", "30DaysOfVLSI"],
     keyTakeaways: [
       "Custom Tcl collection parsing for rapid worst-slack path diagnosis.",
       "Automated ECO script generation for multi-VT cell swapping.",
