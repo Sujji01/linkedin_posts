@@ -1,0 +1,35 @@
+[
+  {
+    "id": "post-1",
+    "content": "Excited to share insights on Clock Tree Synthesis (CTS) and timing closure in 32nm ASIC implementation. Balancing skew vs insertion delay while fixing hold violations with multi-VT standard cells.",
+    "publishedDate": "Recently updated",
+    "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
+    "mediaUrl": "/activities/activity1.jpeg",
+    "likesCount": 42,
+    "commentsCount": 8,
+    "tags": ["PhysicalDesign", "CTS", "VLSI", "Synopsys", "TimingClosure"],
+    "keyHighlight": "Clock Tree Synthesis & Skew Optimization"
+  },
+  {
+    "id": "post-2",
+    "content": "Completed RTL-to-GDSII tape-out simulation of a 32-bit RISC-V processor core using Synopsys Fusion Compiler & ICC2. Clean DRC/LVS signoff with zero setup/hold timing violations.",
+    "publishedDate": "Recently updated",
+    "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
+    "mediaUrl": "/activities/activity2.jpeg",
+    "likesCount": 68,
+    "commentsCount": 12,
+    "tags": ["RISCV", "TapeOut", "ICC2", "FusionCompiler", "DRC_LVS"],
+    "keyHighlight": "RISC-V 32nm Physical Implementation"
+  },
+  {
+    "id": "post-3",
+    "content": "Presented our autonomous hardware system at National Level Technical Symposia. Demonstrating real-time edge processing and robust silicon-level power planning.",
+    "publishedDate": "Recently updated",
+    "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
+    "mediaUrl": "/activities/activity3.jpeg",
+    "likesCount": 85,
+    "commentsCount": 15,
+    "tags": ["Hardware", "Semiconductor", "Innovations", "Electronics"],
+    "keyHighlight": "Hardware Showcase & Recognition"
+  }
+]

@@ -1,0 +1,41 @@
+name: Auto-Sync LinkedIn Posts
+
+on:
+  schedule:
+    # Runs automatically twice every day (00:00 and 12:00 UTC)
+    - cron: '0 0,12 * * *'
+  workflow_dispatch: # Allows you to click "Run workflow" manually in GitHub anytime
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Free LinkedIn Auto-Sync
+        run: node scripts/sync-linkedin.mjs
+
+      - name: Commit and Push Updated Posts
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/linkedinPosts.json
+          if git diff --staged --quiet; then
+            echo "No new changes detected. Everything up to date."
+          else
+            git commit -m "chore(auto-sync): refresh latest daily LinkedIn posts"
+            git push origin main || git push origin master
+          fi
