@@ -12,7 +12,6 @@ const NAV_ITEMS = [
   { label: 'Activities', href: '#activities' },
   { label: 'PD Flow', href: '#flow' },
   { label: 'Focus', href: '#knowledge' },
-  { label: 'Blog', href: '#blog' },
   { label: 'Contact', href: '#contact' },
 ];
 

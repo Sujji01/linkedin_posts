@@ -13,7 +13,6 @@ import { Activities } from './components/Activities';
 import { PdFlowExplorer } from './components/PdFlowExplorer';
 import { KnowledgeGrid } from './components/KnowledgeGrid';
 import { StatsSection } from './components/StatsSection';
-import { BlogSection } from './components/BlogSection';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 
@@ -39,7 +38,6 @@ export const App: React.FC = () => {
           <PdFlowExplorer />
           <KnowledgeGrid />
           <StatsSection />
-          <BlogSection />
           <Contact />
         </main>
 
