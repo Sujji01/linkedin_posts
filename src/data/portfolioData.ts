@@ -414,6 +414,30 @@ export const STATS_DATA: StatItem[] = [
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    id: "blog-day26-icc2-commands",
+    slug: "30-days-vlsi-day26-icc2-commands",
+    title: "30 Days of VLSI (Day 26): ICC2 & Fusion Compiler Commands – Work Smart, Debug Faster",
+    excerpt: "Command knowledge is an essential superpower for a VLSI Physical Design Engineer to analyze violations, optimize PPA, and accelerate timing closure.",
+    fullContent: [
+      "🚀 30 Days of VLSI Physical Design | Day 26/30: ICC2 / Fusion Compiler Commands – Work Smart, Debug Faster!",
+      "Command knowledge is an essential skill for a VLSI Physical Design Engineer. The right commands help us analyze the design, identify violations, optimize PPA, debug issues, and accelerate timing closure across the entire RTL-to-GDSII flow.",
+      "🔹 Key Stages Covered:\n• Design setup & initialization\n• Floorplanning & Power Planning\n• Placement optimization\n• Clock Tree Synthesis (CTS)\n• Routing & post-route optimization\n• Timing and congestion analysis\n• DRC & physical verification",
+      "🔍 Debugging Approach:\nA good PD engineer doesn't just run commands—they understand the reports and root cause behind every violation.\n\nExample debugging pipeline:\nreport_timing ➔ Identify critical path\n⬇️\nreport_qor ➔ Analyze overall design quality\n⬇️\nreport_congestion ➔ Check routing hotspots\n⬇️\nOptimization ➔ Fix the root cause\n⬇️\nRe-run reports ➔ Verify improvement",
+      "💡 Core Interview Questions:\nQ: Why are reporting commands important?\nA: They provide visibility into timing, congestion, QoR, and physical issues, helping engineers make informed optimization decisions.\n\nQ: How do you debug a timing violation?\nA: Start with the timing report, identify the critical path and root cause, apply an appropriate optimization, and re-run STA to verify the result."
+    ],
+    category: "Scripting",
+    readTime: "3 min read",
+    publishedDate: "Aug 11, 2026",
+    tags: ["VLSI", "PhysicalDesign", "ICC2", "FusionCompiler", "Synopsys", "TimingClosure", "30DaysOfVLSI"],
+    keyTakeaways: [
+      "Structured debugging: report_timing ➔ report_qor ➔ report_congestion ➔ Optimize ➔ Verify.",
+      "Always diagnose root causes before applying fixes to prevent secondary timing violations.",
+      "Automate repetitive reporting tasks using Tcl scripts to accelerate ECO closure."
+    ],
+    edaTools: ["Synopsys ICC2", "Fusion Compiler", "PrimeTime", "Design Compiler"],
+    linkedInUrl: "https://www.linkedin.com/posts/sujithpolisetty_vlsi-physicaldesign-icc2-share-7492865587220566017-IrdO/"
+  },
+  {
     id: "blog-1",
     slug: "cts-skew-optimization-32nm",
     title: "Clock Tree Synthesis (CTS) & Skew Optimization in 32nm ASIC Flow",

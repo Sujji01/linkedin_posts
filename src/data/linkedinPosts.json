@@ -1,10 +1,21 @@
 [
   {
+    "id": "post-icc2-commands-day26",
+    "content": "🚀 30 Days of VLSI Physical Design | Day 26/30: ICC2 / Fusion Compiler Commands – Work Smart, Debug Faster!\n\nCommand knowledge is an essential skill for a VLSI Physical Design Engineer. The right commands help us analyze the design, identify violations, optimize PPA, debug issues, and accelerate timing closure.\n\nFlow: report_timing ➔ report_qor ➔ report_congestion ➔ Optimization ➔ Verify.",
+    "publishedDate": "Aug 11, 2026",
+    "postUrl": "https://www.linkedin.com/posts/sujithpolisetty_vlsi-physicaldesign-icc2-share-7492865587220566017-IrdO/",
+    "mediaUrl": "https://media.licdn.com/dms/image/v2/D5622AQE-hQJznuBwFA/feedshare-shrink_1280/B56Z_wBjGOHcAM-/0/1786438365924?e=2147483647&v=beta&t=YWDdbaIYlicZ8WIMSsWVDejnEdJsGfEqcrMFDeN3Eto",
+    "likesCount": 18,
+    "commentsCount": 4,
+    "tags": ["VLSI", "PhysicalDesign", "ICC2", "FusionCompiler", "Synopsys", "TimingClosure"],
+    "keyHighlight": "30 Days of VLSI · Day 26: ICC2 & Fusion Compiler Commands"
+  },
+  {
     "id": "post-1",
     "content": "Excited to share insights on Clock Tree Synthesis (CTS) and timing closure in 32nm ASIC implementation. Balancing skew vs insertion delay while fixing hold violations with multi-VT standard cells.",
-    "publishedDate": "Recently updated",
+    "publishedDate": "Aug 2026",
     "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
-    "mediaUrl": "/activities/activity1.jpeg",
+    "mediaUrl": "/activity-1.jpeg",
     "likesCount": 42,
     "commentsCount": 8,
     "tags": ["PhysicalDesign", "CTS", "VLSI", "Synopsys", "TimingClosure"],
@@ -13,9 +24,9 @@
   {
     "id": "post-2",
     "content": "Completed RTL-to-GDSII tape-out simulation of a 32-bit RISC-V processor core using Synopsys Fusion Compiler & ICC2. Clean DRC/LVS signoff with zero setup/hold timing violations.",
-    "publishedDate": "Recently updated",
+    "publishedDate": "Jul 2026",
     "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
-    "mediaUrl": "/activities/activity2.jpeg",
+    "mediaUrl": "/activity-2.jpeg",
     "likesCount": 68,
     "commentsCount": 12,
     "tags": ["RISCV", "TapeOut", "ICC2", "FusionCompiler", "DRC_LVS"],
@@ -24,9 +35,9 @@
   {
     "id": "post-3",
     "content": "Presented our autonomous hardware system at National Level Technical Symposia. Demonstrating real-time edge processing and robust silicon-level power planning.",
-    "publishedDate": "Recently updated",
+    "publishedDate": "Jun 2026",
     "postUrl": "https://www.linkedin.com/in/sujithpolisetty",
-    "mediaUrl": "/activities/activity3.jpeg",
+    "mediaUrl": "/activity-3.jpeg",
     "likesCount": 85,
     "commentsCount": 15,
     "tags": ["Hardware", "Semiconductor", "Innovations", "Electronics"],
