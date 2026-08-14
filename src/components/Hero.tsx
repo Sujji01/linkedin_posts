@@ -110,35 +110,55 @@ export const Hero: React.FC = () => {
           '-=0.7'
         );
 
-      // Subtle continuous floating animation for the silicon die
+      // Subtle slow floating animation for the silicon die
       gsap.to(dieRef.current, {
-        y: -10,
-        duration: 3.5,
+        y: -8,
+        duration: 4.5,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut',
       });
 
-      // 4-by-4 Alternating Pin Pattern:
-      // Bank 0 (4 pins): Active Cyan -> Dim/Off -> Active Green -> Dim/Off
+      // Slow breathing ambient radial glow
+      gsap.to('.die-ambient-glow', {
+        opacity: 0.3,
+        scale: 1.1,
+        duration: 4.0,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+
+      // Slow breathing silicon carrier border glow
+      gsap.to('.die-carrier-frame', {
+        borderColor: 'rgba(var(--cyan), 0.7)',
+        boxShadow: '0 0 24px rgba(var(--cyan), 0.25)',
+        duration: 4.0,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+
+      // Slow, smooth pin leads wave glow:
+      // Bank 0 (4 pins): Slow Cyan glow -> Soft Dim -> Slow Green glow -> Soft Dim
       gsap.to('.die-pin-bank-0', {
         keyframes: [
-          { stroke: '#33d6f0', opacity: 1, filter: 'drop-shadow(0 0 7px rgba(51, 214, 240, 0.95))', duration: 1.2 },
-          { stroke: '#1c2733', opacity: 0.2, filter: 'none', duration: 0.6 },
-          { stroke: '#4fe0a8', opacity: 1, filter: 'drop-shadow(0 0 7px rgba(79, 224, 168, 0.95))', duration: 1.2 },
-          { stroke: '#1c2733', opacity: 0.2, filter: 'none', duration: 0.6 },
+          { stroke: 'rgb(var(--cyan))', opacity: 1, filter: 'drop-shadow(0 0 8px rgba(var(--cyan), 0.85))', duration: 3.8 },
+          { stroke: 'rgb(var(--line))', opacity: 0.4, filter: 'drop-shadow(0 0 2px rgba(var(--cyan), 0.2))', duration: 3.2 },
+          { stroke: 'rgb(var(--green))', opacity: 0.95, filter: 'drop-shadow(0 0 8px rgba(var(--green), 0.85))', duration: 3.8 },
+          { stroke: 'rgb(var(--line))', opacity: 0.4, filter: 'none', duration: 3.2 },
         ],
         repeat: -1,
         ease: 'sine.inOut',
       });
 
-      // Bank 1 (alternate 4 pins): Dim/Off -> Active Amber -> Dim/Off -> Active Cyan
+      // Bank 1 (alternate 4 pins): Soft Dim -> Slow Amber glow -> Soft Dim -> Slow Cyan glow
       gsap.to('.die-pin-bank-1', {
         keyframes: [
-          { stroke: '#1c2733', opacity: 0.2, filter: 'none', duration: 0.6 },
-          { stroke: '#ffb454', opacity: 1, filter: 'drop-shadow(0 0 7px rgba(255, 180, 84, 0.95))', duration: 1.2 },
-          { stroke: '#1c2733', opacity: 0.2, filter: 'none', duration: 0.6 },
-          { stroke: '#33d6f0', opacity: 1, filter: 'drop-shadow(0 0 7px rgba(51, 214, 240, 0.95))', duration: 1.2 },
+          { stroke: 'rgb(var(--line))', opacity: 0.4, filter: 'none', duration: 3.2 },
+          { stroke: 'rgb(var(--amber))', opacity: 0.9, filter: 'drop-shadow(0 0 8px rgba(var(--amber), 0.8))', duration: 3.8 },
+          { stroke: 'rgb(var(--line))', opacity: 0.4, filter: 'drop-shadow(0 0 2px rgba(var(--cyan), 0.2))', duration: 3.2 },
+          { stroke: 'rgb(var(--cyan))', opacity: 1, filter: 'drop-shadow(0 0 8px rgba(var(--cyan), 0.85))', duration: 3.8 },
         ],
         repeat: -1,
         ease: 'sine.inOut',
@@ -262,8 +282,8 @@ export const Hero: React.FC = () => {
               className="relative w-full max-w-[380px] sm:max-w-[420px] aspect-square flex items-center justify-center"
             >
               
-              {/* Outer Cyan/Green Radial Ambient Glow */}
-              <div className="absolute inset-2 rounded-3xl bg-cyanNeon/15 blur-2xl -z-10 animate-pulse-slow" />
+              {/* Outer Cyan/Green Radial Ambient Glow (Slow Breathing) */}
+              <div className="die-ambient-glow absolute inset-2 rounded-3xl bg-cyanNeon/15 blur-2xl -z-10" />
 
               {/* Silicon Package Board Base */}
               <div className="absolute inset-3 rounded-2xl border border-line bg-gradient-to-br from-bgPanel2 via-bgPanel to-[#0a1017] shadow-2xl shadow-black/80" />
@@ -292,8 +312,8 @@ export const Hero: React.FC = () => {
                 ))}
               </svg>
 
-              {/* Silicon Core Carrier Frame */}
-              <div className="relative w-[78%] h-[78%] rounded-2xl border-2 border-cyanDim bg-bgDark p-2 shadow-2xl flex flex-col items-center justify-center overflow-hidden group">
+              {/* Silicon Core Carrier Frame (Slow Glowing Border) */}
+              <div className="die-carrier-frame relative w-[78%] h-[78%] rounded-2xl border-2 border-cyanDim bg-bgDark p-2 shadow-2xl flex flex-col items-center justify-center overflow-hidden group">
                 
                 {/* Silicon IC Corner Reticle Marks */}
                 <div className="absolute top-2 left-2 w-3.5 h-3.5 border-t-2 border-l-2 border-cyanNeon z-20 pointer-events-none" />
