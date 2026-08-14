@@ -46,8 +46,8 @@ export const Hero: React.FC = () => {
           y2 = y1;
         }
 
-        // 4-by-4 Alternating Pin Banks (Bank 0 or Bank 1 every 4 pins)
-        const bank = Math.floor(globalIdx / 4) % 2;
+        // Strict Alternating Pin Banks (Even pins = Bank 0, Odd pins = Bank 1)
+        const bank = globalIdx % 2;
 
         generated.push({
           id: `pin-${side}-${i}`,
@@ -139,55 +139,46 @@ export const Hero: React.FC = () => {
         ease: 'sine.inOut',
       });
 
-      // Smooth continuous timeline for Bank 0 pins
-      const tlBank0 = gsap.timeline({ repeat: -1, yoyo: true });
-      tlBank0
-        .to('.die-pin-bank-0', {
+      // Alternating Ping-Pong Clock Cycle for Pin Leads:
+      // When Bank 0 (Even Pins) is Bright Glowing, Bank 1 (Odd Pins) is Softly Dimmed, and vice versa!
+      
+      // Bank 0 (Even Pins): Bright Cyan/Green -> Dims Down -> Bright Cyan/Green
+      gsap.fromTo(
+        '.die-pin-bank-0',
+        {
           stroke: 'rgb(var(--cyan))',
           opacity: 1,
-          filter: 'drop-shadow(0 0 9px rgba(var(--cyan), 0.85))',
-          duration: 4.5,
+          filter: 'drop-shadow(0 0 10px rgba(var(--cyan), 0.95))',
+        },
+        {
+          stroke: 'rgb(var(--line))',
+          opacity: 0.25,
+          filter: 'drop-shadow(0 0 0px transparent)',
+          duration: 3.2,
+          repeat: -1,
+          yoyo: true,
           ease: 'sine.inOut',
-        })
-        .to('.die-pin-bank-0', {
-          stroke: 'rgb(var(--green))',
-          opacity: 0.9,
-          filter: 'drop-shadow(0 0 9px rgba(var(--green), 0.8))',
-          duration: 4.5,
-          ease: 'sine.inOut',
-        })
-        .to('.die-pin-bank-0', {
-          stroke: 'rgb(var(--cyan-dim))',
-          opacity: 0.3,
-          filter: 'drop-shadow(0 0 2px rgba(var(--cyan), 0.2))',
-          duration: 3.5,
-          ease: 'sine.inOut',
-        });
+        }
+      );
 
-      // Smooth continuous timeline for Bank 1 pins
-      const tlBank1 = gsap.timeline({ repeat: -1, yoyo: true });
-      tlBank1
-        .to('.die-pin-bank-1', {
-          stroke: 'rgb(var(--amber))',
-          opacity: 0.9,
-          filter: 'drop-shadow(0 0 9px rgba(var(--amber), 0.8))',
-          duration: 4.5,
-          ease: 'sine.inOut',
-        })
-        .to('.die-pin-bank-1', {
-          stroke: 'rgb(var(--cyan))',
+      // Bank 1 (Odd Pins): Softly Dimmed -> Bright Green/Amber -> Softly Dimmed (Exact Opposite Phase)
+      gsap.fromTo(
+        '.die-pin-bank-1',
+        {
+          stroke: 'rgb(var(--line))',
+          opacity: 0.25,
+          filter: 'drop-shadow(0 0 0px transparent)',
+        },
+        {
+          stroke: 'rgb(var(--green))',
           opacity: 1,
-          filter: 'drop-shadow(0 0 9px rgba(var(--cyan), 0.85))',
-          duration: 4.5,
+          filter: 'drop-shadow(0 0 10px rgba(var(--green), 0.95))',
+          duration: 3.2,
+          repeat: -1,
+          yoyo: true,
           ease: 'sine.inOut',
-        })
-        .to('.die-pin-bank-1', {
-          stroke: 'rgb(var(--cyan-dim))',
-          opacity: 0.3,
-          filter: 'drop-shadow(0 0 2px rgba(var(--cyan), 0.2))',
-          duration: 3.5,
-          ease: 'sine.inOut',
-        });
+        }
+      );
     },
     { scope: containerRef }
   );
