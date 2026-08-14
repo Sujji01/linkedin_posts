@@ -1,1 +1,2 @@
-open my portfolio 
+open my portfolio README.md
+
