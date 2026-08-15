@@ -37,9 +37,7 @@ const NAV_ITEMS: NavItem[] = [
   { number: '05', label: 'Education', href: '#education', icon: GraduationCap },
   { number: '06', label: 'Activities', href: '#activities', icon: Trophy },
   { number: '07', label: 'PD Flow', href: '#flow', icon: Activity, tag: 'Interactive' },
-  { number: '08', label: 'Focus Areas', href: '#knowledge', icon: Target },
-  { number: '09', label: 'Articles', href: '#blog', icon: BookOpen, tag: 'New' },
-  { number: '10', label: 'Contact', href: '#contact', icon: Mail },
+  { number: '08', label: 'Contact', href: '#contact', icon: Mail },
 ];
 
 export const Navbar: React.FC = () => {
@@ -136,23 +134,22 @@ export const Navbar: React.FC = () => {
           </a>
 
           {/* Desktop Nav Links (Spaced Out with Generous Breathing Room) */}
-          <div className="hidden xl:flex items-center justify-center flex-1 gap-3.5 2xl:gap-6 px-4 min-w-0">
+          <div className="hidden lg:flex items-center justify-center flex-1 gap-4 xl:gap-6 2xl:gap-8 px-4 min-w-0">
             {NAV_ITEMS.map((item) => {
               const sectionId = item.href.substring(1);
               const isActive = activeSection === sectionId;
-              const displayLabel = item.label === 'Focus Areas' ? 'Focus' : item.label;
 
               return (
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item.href)}
-                  className={`font-mono text-xs uppercase tracking-wider transition-all duration-200 px-2.5 py-1.5 rounded-md relative flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 ${
+                  className={`font-mono text-xs uppercase tracking-wider transition-all duration-200 px-3 py-1.5 rounded-md relative flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 ${
                     isActive
                       ? 'text-cyanNeon font-semibold bg-cyanNeon/5'
                       : 'text-textDim hover:text-cyanNeon hover:bg-bgPanel/60'
                   }`}
                 >
-                  <span>{displayLabel}</span>
+                  <span>{item.label}</span>
                   {item.tag && (
                     <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyanNeon/10 text-cyanNeon border border-cyanDim/40 font-mono">
                       {item.tag}
@@ -190,10 +187,10 @@ export const Navbar: React.FC = () => {
               <span>Hire Me</span>
             </a>
 
-            {/* Drawer Toggle for Tablet (< xl) */}
+            {/* Drawer Toggle for Tablet (< lg) */}
             <button
               onClick={() => setSideDrawerOpen(true)}
-              className="xl:hidden p-2 text-cyanNeon border border-cyanDim/60 rounded-md bg-bgPanel hover:bg-cyanNeon/10 transition-colors ml-1"
+              className="lg:hidden p-2 text-cyanNeon border border-cyanDim/60 rounded-md bg-bgPanel hover:bg-cyanNeon/10 transition-colors ml-1"
               aria-label="Open side menu"
             >
               <Menu className="w-4 h-4" />
