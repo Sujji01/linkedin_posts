@@ -121,11 +121,11 @@ export const Navbar: React.FC = () => {
             : 'bg-transparent border-b border-transparent py-5'
         }`}
       >
-        <nav className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+        <nav className="max-w-[1500px] mx-auto px-6 sm:px-8 lg:px-10 flex items-center justify-between gap-6 xl:gap-10">
           {/* Logo (Left) */}
           <a
             href="#"
-            className="flex items-center gap-2.5 font-mono font-bold text-sm tracking-wider text-textMain group flex-shrink-0"
+            className="flex items-center gap-2.5 font-mono font-bold text-sm tracking-wider text-textMain group flex-shrink-0 mr-2"
           >
             <div className="w-7 h-7 rounded-md bg-bgPanel border border-cyanDim flex items-center justify-center group-hover:border-cyanNeon transition-colors shadow-sm">
               <Cpu className="w-4 h-4 text-cyanNeon group-hover:rotate-45 transition-transform duration-300" />
@@ -135,8 +135,8 @@ export const Navbar: React.FC = () => {
             </span>
           </a>
 
-          {/* Desktop Nav Links (Centered with Balanced Proportions) */}
-          <div className="hidden xl:flex items-center justify-center flex-1 gap-3 2xl:gap-4.5 px-2 min-w-0">
+          {/* Desktop Nav Links (Spaced Out with Generous Breathing Room) */}
+          <div className="hidden xl:flex items-center justify-center flex-1 gap-3.5 2xl:gap-6 px-4 min-w-0">
             {NAV_ITEMS.map((item) => {
               const sectionId = item.href.substring(1);
               const isActive = activeSection === sectionId;
@@ -146,20 +146,20 @@ export const Navbar: React.FC = () => {
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item.href)}
-                  className={`font-mono text-[11px] 2xl:text-xs uppercase tracking-wider transition-all duration-200 py-1 relative flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
+                  className={`font-mono text-xs uppercase tracking-wider transition-all duration-200 px-2.5 py-1.5 rounded-md relative flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 ${
                     isActive
-                      ? 'text-cyanNeon font-semibold'
-                      : 'text-textDim hover:text-cyanNeon'
+                      ? 'text-cyanNeon font-semibold bg-cyanNeon/5'
+                      : 'text-textDim hover:text-cyanNeon hover:bg-bgPanel/60'
                   }`}
                 >
                   <span>{displayLabel}</span>
                   {item.tag && (
-                    <span className="text-[9px] px-1 py-0.2 rounded bg-cyanNeon/10 text-cyanNeon border border-cyanDim/40 font-mono">
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyanNeon/10 text-cyanNeon border border-cyanDim/40 font-mono">
                       {item.tag}
                     </span>
                   )}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyanNeon rounded-full shadow-glow-cyan" />
+                    <span className="absolute bottom-0 left-2 right-2 h-[2px] bg-cyanNeon rounded-full shadow-glow-cyan" />
                   )}
                 </button>
               );
@@ -167,7 +167,7 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Right Actions */}
-          <div className="hidden sm:flex items-center gap-2.5 2xl:gap-3 flex-shrink-0">
+          <div className="hidden sm:flex items-center gap-3 sm:gap-4 flex-shrink-0 ml-2">
             {/* Theme Toggle Switch */}
             <ThemeToggleSwitch />
 
@@ -175,7 +175,7 @@ export const Navbar: React.FC = () => {
             <a
               href={PERSONAL_INFO.resumePath}
               download
-              className="flex items-center gap-1.5 font-mono text-xs text-textDim hover:text-textMain px-3 py-1.5 rounded border border-line hover:border-lineSoft transition-colors bg-bgPanel/50"
+              className="flex items-center gap-1.5 font-mono text-xs text-textDim hover:text-textMain px-3.5 py-1.5 rounded-lg border border-line hover:border-lineSoft transition-colors bg-bgPanel/50"
             >
               <Download className="w-3.5 h-3.5 text-cyanNeon" />
               <span>CV</span>
@@ -184,7 +184,7 @@ export const Navbar: React.FC = () => {
             {/* Hire Me CTA */}
             <a
               href={`mailto:${PERSONAL_INFO.email}`}
-              className="flex items-center gap-1.5 font-mono text-xs text-cyanNeon bg-cyanNeon/10 border border-cyanDim hover:bg-cyanNeon/20 hover:border-cyanNeon px-3.5 py-1.5 rounded-md transition-all shadow-sm shadow-cyanNeon/10"
+              className="flex items-center gap-1.5 font-mono text-xs text-cyanNeon bg-cyanNeon/10 border border-cyanDim hover:bg-cyanNeon/20 hover:border-cyanNeon px-4 py-1.5 rounded-lg transition-all shadow-sm shadow-cyanNeon/10 font-semibold"
             >
               <Mail className="w-3.5 h-3.5" />
               <span>Hire Me</span>
