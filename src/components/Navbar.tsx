@@ -37,8 +37,8 @@ const NAV_ITEMS: NavItem[] = [
   { number: '05', label: 'Education', href: '#education', icon: GraduationCap },
   { number: '06', label: 'Activities', href: '#activities', icon: Trophy },
   { number: '07', label: 'PD Flow', href: '#flow', icon: Activity, tag: 'Interactive' },
-  { number: '08', label: 'Articles', href: '#blog', icon: BookOpen, tag: 'New' },
-  { number: '09', label: 'Focus Areas', href: '#knowledge', icon: Target },
+  { number: '08', label: 'Focus Areas', href: '#knowledge', icon: Target },
+  { number: '09', label: 'Articles', href: '#blog', icon: BookOpen, tag: 'New' },
   { number: '10', label: 'Contact', href: '#contact', icon: Mail },
 ];
 
@@ -47,22 +47,38 @@ export const Navbar: React.FC = () => {
   const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('about');
 
-  // Track active section and header scroll styling
+  // Track active section and header scroll styling with high precision
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
 
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+
+      // Bottom of page detection -> highlight Contact
+      if (windowHeight + scrollY >= docHeight - 80) {
+        setActiveSection('contact');
+        return;
+      }
+
       const sections = NAV_ITEMS.map((item) => item.href.substring(1));
-      const scrollPosition = window.scrollY + 220;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
-        if (el && el.offsetTop <= scrollPosition) {
-          setActiveSection(sections[i]);
-          break;
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          // Active when section top enters viewport upper area
+          if (rect.top <= windowHeight * 0.38) {
+            setActiveSection(sections[i]);
+            break;
+          }
         }
       }
     };
+
+    // Run once on load to set correct initial active section
+    handleScroll();
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
