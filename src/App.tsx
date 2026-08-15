@@ -1,7 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { CircuitBg } from './components/CircuitBg';
-import { CustomCursor } from './components/CustomCursor';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
@@ -16,6 +15,7 @@ import { BlogSection } from './components/BlogSection';
 import { StatsSection } from './components/StatsSection';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
+import { CustomCursor } from './components/CustomCursor';
 
 export const App: React.FC = () => {
   return (

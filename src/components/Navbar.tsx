@@ -105,51 +105,54 @@ export const Navbar: React.FC = () => {
             : 'bg-transparent border-b border-transparent py-5'
         }`}
       >
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Logo */}
-          <a
-            href="#"
-            className="flex items-center gap-2.5 font-mono font-bold text-sm tracking-wider text-textMain group"
-          >
-            <div className="w-7 h-7 rounded-md bg-bgPanel border border-cyanDim flex items-center justify-center group-hover:border-cyanNeon transition-colors shadow-sm">
-              <Cpu className="w-4 h-4 text-cyanNeon group-hover:rotate-45 transition-transform duration-300" />
-            </div>
-            <span className="tracking-widest">
-              SUJITH<span className="text-cyanNeon">.PD</span>
-            </span>
-          </a>
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-6">
+          {/* Logo & Side-Left Nav Links */}
+          <div className="flex items-center gap-6 xl:gap-8 min-w-0">
+            {/* Logo */}
+            <a
+              href="#"
+              className="flex items-center gap-2.5 font-mono font-bold text-sm tracking-wider text-textMain group flex-shrink-0"
+            >
+              <div className="w-7 h-7 rounded-md bg-bgPanel border border-cyanDim flex items-center justify-center group-hover:border-cyanNeon transition-colors shadow-sm">
+                <Cpu className="w-4 h-4 text-cyanNeon group-hover:rotate-45 transition-transform duration-300" />
+              </div>
+              <span className="tracking-widest">
+                SUJITH<span className="text-cyanNeon">.PD</span>
+              </span>
+            </a>
 
-          {/* Desktop Nav Links */}
-          <div className="hidden xl:flex items-center gap-5">
-            {NAV_ITEMS.map((item) => {
-              const sectionId = item.href.substring(1);
-              const isActive = activeSection === sectionId;
-              return (
-                <button
-                  key={item.label}
-                  onClick={() => handleNavClick(item.href)}
-                  className={`font-mono text-xs uppercase tracking-widest transition-all duration-200 py-1 relative flex items-center gap-1.5 ${
-                    isActive
-                      ? 'text-cyanNeon font-semibold'
-                      : 'text-textDim hover:text-cyanNeon'
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  {item.tag && (
-                    <span className="text-[9px] px-1 py-0.2 rounded bg-cyanNeon/10 text-cyanNeon border border-cyanDim/40 font-mono">
-                      {item.tag}
-                    </span>
-                  )}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyanNeon rounded-full shadow-glow-cyan" />
-                  )}
-                </button>
-              );
-            })}
+            {/* Desktop Nav Links (Side-Left Aligned) */}
+            <div className="hidden lg:flex items-center gap-3.5 xl:gap-5 overflow-x-auto scrollbar-none py-1">
+              {NAV_ITEMS.map((item) => {
+                const sectionId = item.href.substring(1);
+                const isActive = activeSection === sectionId;
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => handleNavClick(item.href)}
+                    className={`font-mono text-xs uppercase tracking-widest transition-all duration-200 py-1 relative flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 ${
+                      isActive
+                        ? 'text-cyanNeon font-semibold'
+                        : 'text-textDim hover:text-cyanNeon'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {item.tag && (
+                      <span className="text-[9px] px-1 py-0.2 rounded bg-cyanNeon/10 text-cyanNeon border border-cyanDim/40 font-mono">
+                        {item.tag}
+                      </span>
+                    )}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyanNeon rounded-full shadow-glow-cyan" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Desktop Right Actions */}
-          <div className="hidden sm:flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-3 flex-shrink-0">
             {/* Theme Toggle Switch */}
             <ThemeToggleSwitch />
 
@@ -171,21 +174,10 @@ export const Navbar: React.FC = () => {
               <Mail className="w-3.5 h-3.5" />
               <span>Hire Me</span>
             </a>
-
-            {/* Side Drawer Toggle Button (Desktop & Tablet) */}
-            <button
-              onClick={() => setSideDrawerOpen(true)}
-              className="p-2 rounded-lg bg-bgPanel border border-line hover:border-cyanNeon text-textDim hover:text-cyanNeon transition-all flex items-center gap-1.5 font-mono text-xs ml-1"
-              aria-label="Open side menu"
-              title="Expand Side Menu"
-            >
-              <Menu className="w-4 h-4" />
-              <span className="hidden md:inline text-[11px]">Menu</span>
-            </button>
           </div>
 
           {/* Mobile Right Controls */}
-          <div className="flex sm:hidden items-center gap-2">
+          <div className="flex lg:hidden items-center gap-2">
             <ThemeToggleSwitch />
             <button
               onClick={() => setSideDrawerOpen(true)}

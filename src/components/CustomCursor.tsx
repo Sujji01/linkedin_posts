@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 export const CustomCursor: React.FC = () => {
-  const [position, setPosition] = useState({ x: -100, y: -100 });
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -10,7 +10,8 @@ export const CustomCursor: React.FC = () => {
 
   const cursorRef = useRef<HTMLDivElement>(null);
   const followerRef = useRef<HTMLDivElement>(null);
-  const mouseCoordsRef = useRef({ x: -100, y: -100 });
+  const mouseCoordsRef = useRef<{ x: number; y: number } | null>(null);
+  const isInitializedRef = useRef(false);
 
   useEffect(() => {
     // Only enable custom cursor on fine pointer devices (mouse / trackpad)
@@ -18,15 +19,23 @@ export const CustomCursor: React.FC = () => {
       return;
     }
 
-    setIsVisible(true);
-
     let followerX = -100;
     let followerY = -100;
     let animationFrameId: number;
 
     const onMouseMove = (e: MouseEvent) => {
+      // Ignore invalid or 0,0 initial event before real movement
+      if (e.clientX <= 0 && e.clientY <= 0) return;
+
+      if (!isInitializedRef.current) {
+        followerX = e.clientX;
+        followerY = e.clientY;
+        isInitializedRef.current = true;
+      }
+
       mouseCoordsRef.current = { x: e.clientX, y: e.clientY };
       setPosition({ x: e.clientX, y: e.clientY });
+      setIsVisible(true);
 
       // Detect interactive elements
       const target = e.target as HTMLElement | null;
@@ -41,12 +50,14 @@ export const CustomCursor: React.FC = () => {
 
     // Smooth follower interpolation loop (60fps)
     const animateFollower = () => {
-      const { x: targetX, y: targetY } = mouseCoordsRef.current;
-      followerX += (targetX - followerX) * 0.22;
-      followerY += (targetY - followerY) * 0.22;
+      if (mouseCoordsRef.current && isInitializedRef.current) {
+        const { x: targetX, y: targetY } = mouseCoordsRef.current;
+        followerX += (targetX - followerX) * 0.22;
+        followerY += (targetY - followerY) * 0.22;
 
-      if (followerRef.current) {
-        followerRef.current.style.transform = `translate3d(${followerX}px, ${followerY}px, 0) translate(-50%, -50%)`;
+        if (followerRef.current) {
+          followerRef.current.style.transform = `translate3d(${followerX}px, ${followerY}px, 0) translate(-50%, -50%)`;
+        }
       }
 
       animationFrameId = requestAnimationFrame(animateFollower);
@@ -70,7 +81,7 @@ export const CustomCursor: React.FC = () => {
     };
   }, []);
 
-  if (!isVisible) return null;
+  if (!isVisible || !position) return null;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[99999]" aria-hidden="true">
