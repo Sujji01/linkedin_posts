@@ -105,7 +105,7 @@ export const Navbar: React.FC = () => {
             : 'bg-transparent border-b border-transparent py-5'
         }`}
       >
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-6">
+        <nav className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 flex items-center justify-between gap-6">
           {/* Logo & Side-Left Nav Links */}
           <div className="flex items-center gap-6 xl:gap-8 min-w-0">
             {/* Logo */}
