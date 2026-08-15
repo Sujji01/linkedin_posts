@@ -12,6 +12,7 @@ import { Education } from './components/Education';
 import { Activities } from './components/Activities';
 import { PdFlowExplorer } from './components/PdFlowExplorer';
 import { KnowledgeGrid } from './components/KnowledgeGrid';
+import { BlogSection } from './components/BlogSection';
 import { StatsSection } from './components/StatsSection';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
@@ -37,6 +38,7 @@ export const App: React.FC = () => {
           <Activities />
           <PdFlowExplorer />
           <KnowledgeGrid />
+          <BlogSection />
           <StatsSection />
           <Contact />
         </main>

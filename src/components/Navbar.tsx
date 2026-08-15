@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { label: 'Education', href: '#education' },
   { label: 'Activities', href: '#activities' },
   { label: 'PD Flow', href: '#flow' },
+  { label: 'Articles', href: '#blog' },
   { label: 'Focus', href: '#knowledge' },
   { label: 'Contact', href: '#contact' },
 ];
