@@ -11,8 +11,6 @@ import {
   GraduationCap, 
   Trophy, 
   Activity, 
-  BookOpen, 
-  Target, 
   ChevronRight,
   Sparkles,
   ExternalLink
