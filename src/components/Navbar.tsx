@@ -176,8 +176,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="flex items-center gap-2 font-mono font-bold text-sm tracking-wider text-textMain group shrink-0"
             title="Scroll to top"
           >
-            <div className="w-8 h-8 rounded-lg bg-bgPanel border border-cyanDim flex items-center justify-center group-hover:border-cyanNeon group-hover:shadow-glow-cyan/20 transition-all shadow-sm">
-              <Cpu className="w-4 h-4 text-cyanNeon group-hover:rotate-45 transition-transform duration-300" />
+            <div className="w-8 h-8 rounded-lg overflow-hidden bg-bgPanel border border-cyanDim flex items-center justify-center group-hover:border-cyanNeon group-hover:shadow-glow-cyan/20 transition-all shadow-sm">
+              <img
+                src="/sp-logo.png"
+                alt="SP Logo"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              />
             </div>
             <span className="tracking-widest">
               SUJITH<span className="text-cyanNeon">.PD</span>
@@ -301,8 +305,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               {/* Header */}
               <div className="p-5 sm:p-6 border-b border-line flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-bgDark border border-cyanDim flex items-center justify-center text-cyanNeon shadow-sm">
-                    <Cpu className="w-5 h-5 animate-pulse" />
+                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-bgDark border border-cyanDim flex items-center justify-center shadow-sm">
+                    <img
+                      src="/sp-logo.png"
+                      alt="SP Logo"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div>
                     <h3 className="font-display font-bold text-sm text-textMain tracking-wide">

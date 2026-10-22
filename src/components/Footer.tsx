@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUp, Cpu } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -13,8 +13,12 @@ export const Footer: React.FC = () => {
           
           {/* Logo & Info */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-bgPanel border border-cyanDim flex items-center justify-center">
-              <Cpu className="w-4 h-4 text-cyanNeon" />
+            <div className="w-8 h-8 rounded-lg overflow-hidden bg-bgPanel border border-cyanDim flex items-center justify-center shadow-sm">
+              <img
+                src="/sp-logo.png"
+                alt="SP Logo"
+                className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+              />
             </div>
             <div>
               <span className="font-mono text-xs font-bold text-textMain tracking-wider block">
