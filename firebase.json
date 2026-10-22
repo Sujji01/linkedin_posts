@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "sujith-polisetty",
     "public": "dist",
     "ignore": [
       "firebase.json",
