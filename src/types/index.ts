@@ -1,12 +1,23 @@
+export interface ProjectPPA {
+  timing: string;
+  wirelength: string;
+  drcLvs: string;
+  areaUtilization?: string;
+  skewTarget?: string;
+}
+
 export interface Project {
   id: string;
   title: string;
   technology: string;
   role: string;
+  category?: 'processor' | 'soc' | 'fpu' | 'network' | 'all';
   shortDesc: string;
   fullDesc: string;
   tools: string[];
   metrics: string;
+  ppa?: ProjectPPA;
+  stagesCompleted?: string[];
   keyHighlights: string[];
   challengesSolved: string[];
 }
@@ -53,6 +64,41 @@ export interface ActivityItem {
   }[];
 }
 
+export interface FlowStepDeepDive {
+  concepts?: { title: string; points: string[] }[];
+  equations?: { name: string; formula: string; note?: string }[];
+  debuggingPatterns?: { problem: string; symptom: string; verify: string; fix: string }[];
+  commonMistakes?: string[];
+  visualType?: 'logic' | 'floorplan' | 'cts' | 'routing' | 'signoff' | 'tools';
+  edaComparison?: { role: string; synopsys: string; cadence: string; notes?: string }[];
+  auditChecklist?: string[];
+  deliverablesSummary?: string;
+  pdkImpact?: string[];
+  reportExample?: { title: string; content: string; commentary: string };
+}
+
+export interface VlsiToolRole {
+  category: string;
+  synopsys: string;
+  cadence: string;
+  siemens?: string;
+  openSource?: string;
+  notes?: string;
+}
+
+export interface VlsiFileFormat {
+  extension: string;
+  name: string;
+  purpose: string;
+  stageProduced: string;
+}
+
+export interface StageDependencyLoop {
+  stagePair: string;
+  cause: string;
+  impact: string;
+}
+
 export interface FlowStep {
   stepNumber: string;
   name: string;
@@ -61,6 +107,9 @@ export interface FlowStep {
   keyInputs: string[];
   keyOutputs: string[];
   criticalChecks: string[];
+  tclCommands?: string[];
+  interviewTip?: string;
+  deepDive?: FlowStepDeepDive;
 }
 
 export interface KnowledgeArea {

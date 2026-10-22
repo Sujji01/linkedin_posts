@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="py-12 border-t border-line/60 bg-bgDark relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
           
           {/* Logo & Info */}
           <div className="flex items-center gap-3">
@@ -27,11 +27,13 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Status Badge */}
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-bgPanel border border-line">
-            <span className="w-2 h-2 rounded-full bg-greenNeon animate-pulse" />
-            <span className="font-mono text-[11px] text-textDim">
-              Node: 32nm Synopsys Toolchain · DRC/LVS Clean
-            </span>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-bgPanel border border-line">
+              <span className="w-2 h-2 rounded-full bg-greenNeon animate-pulse" />
+              <span className="font-mono text-[11px] text-textDim">
+                Nodes: 14nm FinFET &amp; 32nm Synopsys Toolchain · DRC/LVS Clean
+              </span>
+            </div>
           </div>
 
           {/* Scroll to top */}

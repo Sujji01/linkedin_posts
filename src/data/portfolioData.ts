@@ -7,7 +7,10 @@ import {
   FlowStep, 
   KnowledgeArea, 
   StatItem,
-  BlogPost 
+  BlogPost,
+  VlsiToolRole,
+  VlsiFileFormat,
+  StageDependencyLoop
 } from '../types';
 
 export const PERSONAL_INFO = {
@@ -29,7 +32,7 @@ export const PERSONAL_INFO = {
 export const ABOUT_DATA = {
   paragraphs: [
     "I'm a Physical Design Engineer currently training under the Advanced Physical Design Trainee program at Maven Silicon Softech Pvt Ltd., Bangalore, where I've built a solid, hands‑on foundation across the complete RTL‑to‑GDSII flow — from netlist through floorplanning, placement, clock tree synthesis, routing, and final signoff.",
-    "My work centers on getting designs to timing closure while keeping DRC/LVS clean, using Synopsys tools including Fusion Compiler, ICC2, DC, PrimeTime, and Library Manager. Across my training projects — a RISC‑V core, a Floating Point Unit, and a 1×3 Router — I've practiced fixing setup and hold violations, optimizing wire length, and verifying fabrication readiness on a 32nm node.",
+    "My work centers on getting designs to timing closure while keeping DRC/LVS clean, using Synopsys tools including Fusion Compiler, ICC2, DC, PrimeTime, and Library Manager. Across my training projects — the Raven SoC (14nm FinFET), a RISC‑V core, a Floating Point Unit (14nm), and a 1×3 Router — I've practiced fixing setup and hold violations, optimizing wire length, and verifying fabrication readiness on 14nm FinFET and 32nm nodes.",
     "I'm drawn to the discipline of physical design because it sits exactly at the intersection of logic and silicon reality — where an idea in Verilog has to survive timing, power, and area trade‑offs to actually become a working chip. I'm looking to bring that foundation into a production tape‑out environment."
   ],
   highlights: [
@@ -89,6 +92,7 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     subtitle: "Node experience & physical verification",
     categoryKey: "node",
     skills: [
+      { name: "14nm FinFET Node", level: "Hands-on", highlight: true },
       { name: "32nm Technology Node", level: "Hands-on", highlight: true },
       { name: "DRC Verification", level: "Signoff", highlight: true },
       { name: "LVS Verification", level: "Signoff", highlight: true },
@@ -133,20 +137,58 @@ export const EXPERIENCE_DATA: TimelineItem[] = [
       "Developed a solid understanding of trade‑offs between timing, power, and area (PPA) optimization — critical for successful tape‑outs at deep sub‑micron technology nodes.",
       "Executed signoff STA on multiple design iterations to identify and resolve max transition, max capacitance, setup and hold timing violations."
     ],
-    toolsUsed: ["Synopsys Fusion Compiler", "ICC2", "Design Compiler", "PrimeTime", "Library Manager", "32nm PDK", "TCL"]
+    toolsUsed: ["Synopsys Fusion Compiler", "ICC2", "Design Compiler", "PrimeTime", "Library Manager", "14nm & 32nm PDK", "TCL"]
   }
 ];
 
 export const PROJECTS_DATA: Project[] = [
   {
+    id: "raven-soc",
+    title: "Raven SoC – Physical Implementation",
+    technology: "14nm FinFET PDK",
+    role: "Physical Design Engineer",
+    category: "soc",
+    shortDesc: "Implemented the complete physical design flow for the Raven SoC on 14nm FinFET using Synopsys ICC2, achieving zero setup/hold slack violations and 100% clean DRC/LVS closure.",
+    fullDesc: "Comprehensive physical design implementation for the Raven System-on-Chip (SoC) on advanced 14nm FinFET. Focused on hierarchical floorplanning, standard cell placement optimization, congestion relief across memory/bus routing corridors, clock tree synthesis with skew balancing, detailed multi-layer routing, and signoff STA / physical verification.",
+    tools: ["Synopsys DC", "ICC2", "Library Manager", "PrimeTime", "14nm FinFET PDK", "Tcl"],
+    metrics: "Clean DRC/LVS signoff & zero setup/hold timing violations",
+    ppa: {
+      timing: "WNS: +0.08ns | TNS: 0.00ns (Setup & Hold Clean at SS & FF corners)",
+      wirelength: "Congestion-driven routing with optimal layer assignment (M3-M7)",
+      drcLvs: "100% DRC & LVS Clean (Zero spacing, enclosure or antenna violations)",
+      areaUtilization: "68% core utilization with dedicated macro keepouts & channel budgeting",
+      skewTarget: "<70ps balanced clock tree insertion across SoC peripheral subsystems"
+    },
+    stagesCompleted: ["Synthesis", "Floorplan", "Placement", "CTS", "Routing", "Signoff"],
+    keyHighlights: [
+      "Implemented complete physical design flow for Raven SoC on 14nm FinFET technology node.",
+      "Optimized standard cell placement and critical routing channels around memory/peripheral interfaces.",
+      "Analyzed multi-corner timing reports and eliminated setup and hold violations in PrimeTime.",
+      "Conducted physical verification (DRC and LVS) ensuring 100% foundry fabrication compliance."
+    ],
+    challengesSolved: [
+      "Resolved complex routing congestion around high-density SoC logic clusters using halo keepouts and density screens.",
+      "Fixed hold violations on fast paths across PVT corners while preserving area and dynamic power budgets."
+    ]
+  },
+  {
     id: "riscv-core",
     title: "RISC‑V Core Physical Implementation",
     technology: "32nm PDK",
     role: "Physical Design & Macro Integration",
+    category: "processor",
     shortDesc: "Implemented the end-to-end physical design flow for a 32nm RISC‑V processor using Synopsys ICC2 with custom macro placement.",
     fullDesc: "Comprehensive physical design implementation of a 32nm RISC-V processor core. The project involved floorplan budgeting, power planning, cell placement optimization, clock tree synthesis with skew balancing, detailed routing, and final timing signoff.",
     tools: ["Synopsys DC", "ICC2", "Library Manager", "PrimeTime", "32nm PDK"],
     metrics: "10% reduction in total wire length & clean DRC/LVS closure",
+    ppa: {
+      timing: "WNS: +0.12ns | TNS: 0.00ns (Zero Violations)",
+      wirelength: "-10% total wirelength via congestion-driven placement",
+      drcLvs: "0 DRC & 0 LVS violations (Signoff Clean)",
+      areaUtilization: "68% core utilization with dedicated macro halos",
+      skewTarget: "<75ps clock skew across sequential register banks"
+    },
+    stagesCompleted: ["Synthesis", "Floorplan", "Placement", "CTS", "Routing", "Signoff"],
     keyHighlights: [
       "Designed and integrated two custom macros into the RISC‑V architecture floorplan.",
       "Achieved timing closure by resolving setup and hold violations during post-CTS and post-route optimization.",
@@ -161,14 +203,23 @@ export const PROJECTS_DATA: Project[] = [
   {
     id: "fpu-core",
     title: "Floating Point Unit (FPU)",
-    technology: "32nm PDK",
-    role: "Timing Closure & Macro Placement",
-    shortDesc: "Optimized the physical design of an IEEE-compliant FPU using ICC2 by fixing critical setup/hold violations across placement and CTS.",
-    fullDesc: "Physical design optimization of a high-speed Floating Point Unit. Applied multi-step optimization strategies to close timing paths across arithmetic compute stages while maintaining power efficiency.",
-    tools: ["Synopsys DC", "ICC2", "Library Manager", "PrimeTime"],
+    technology: "14nm FinFET PDK",
+    role: "Physical Design Engineer",
+    category: "fpu",
+    shortDesc: "Implemented the physical design flow for an FPU using Synopsys DC, ICC2, and Library Manager to meet timing and physical design requirements.",
+    fullDesc: "Physical design implementation of a high-speed Floating Point Unit on 14nm. Focused on floorplanning, placement, and routing. Analyzed timing reports to identify violations and optimized the layout to meet timing and physical design requirements.",
+    tools: ["Synopsys DC", "ICC2", "Library Manager", "PrimeTime", "14nm PDK"],
     metrics: "Zero Setup/Hold violations & successful DRC/LVS signoff",
+    ppa: {
+      timing: "Setup/Hold clean across SS (0.95V, 125°C) & FF corners",
+      wirelength: "Optimized high-fanout arithmetic compute tree nets",
+      drcLvs: "Clean DRC/LVS with automated antenna diode insertion",
+      areaUtilization: "72% standard cell density with balanced channel spacing",
+      skewTarget: "<80ps insertion delay variation across pipeline stages"
+    },
+    stagesCompleted: ["Synthesis", "Floorplan", "Placement", "CTS", "Routing", "Signoff"],
     keyHighlights: [
-      "Designed & integrated two custom macros into the FPU floorplan.",
+      "Designed & integrated custom macros into the FPU floorplan.",
       "Mitigated critical setup and hold violations during placement and CTS stages through buffer insertion and cell resizing.",
       "Balanced clock network insertion delays for high-frequency floating point calculation pipelines.",
       "Verified complete fabrication compliance via comprehensive DRC and LVS clean signoff."
@@ -183,10 +234,19 @@ export const PROJECTS_DATA: Project[] = [
     title: "Router 1×3 Network Block",
     technology: "32nm PDK",
     role: "Full Flow RTL-to-GDSII Designer",
+    category: "network",
     shortDesc: "Developed a 1×3 router from RTL to physical design in a single power domain using Synopsys Fusion Compiler.",
     fullDesc: "Complete implementation of a 1×3 packet router from Verilog RTL to GDSII layout using Synopsys Fusion Compiler unified data model. Verified packet routing logic through comprehensive simulation and physical signoff.",
     tools: ["Fusion Compiler", "Single Power Domain", "TCL Automation", "PrimeTime"],
     metrics: "Full RTL → GDSII single power domain tape-out flow",
+    ppa: {
+      timing: "Positive setup slack (+0.22ns) with zero hold degradation",
+      wirelength: "Preferred-layer routing rules applied to eliminate crossbar congestion",
+      drcLvs: "100% routability & clean DRC/LVS signoff verification",
+      areaUtilization: "Single power domain power rings & low-IR drop mesh (M7/M8)",
+      skewTarget: "Low skew distribution across FIFO packet buffers"
+    },
+    stagesCompleted: ["Synthesis", "Floorplan", "Placement", "CTS", "Routing", "Signoff"],
     keyHighlights: [
       "Executed end-to-end synthesis, floorplanning, placement, CTS, and routing within Synopsys Fusion Compiler.",
       "Defined single power domain power rings and mesh distribution grids.",
@@ -206,8 +266,8 @@ export const EDUCATION_DATA: EducationItem[] = [
     degree: "B.E. in Electronics & Communication Engineering",
     institution: "Geethanjali Institute of Science & Technology",
     year: "2021 — 2025",
-    score: "75%",
-    scoreLabel: "Aggregate",
+    score: "7.7",
+    scoreLabel: "CGPA",
     details: "Focus on VLSI System Design, Digital Electronics, Microcontrollers, and Embedded Systems."
   },
   {
@@ -215,8 +275,8 @@ export const EDUCATION_DATA: EducationItem[] = [
     degree: "Intermediate (MPC)",
     institution: "Krishna Chaitanya Junior College",
     year: "2019 — 2021",
-    score: "80.6%",
-    scoreLabel: "Score",
+    score: "8.0",
+    scoreLabel: "CGPA",
     details: "Mathematics, Physics, and Chemistry core curriculum."
   },
   {
@@ -224,8 +284,8 @@ export const EDUCATION_DATA: EducationItem[] = [
     degree: "Secondary School Certificate (SSC)",
     institution: "New Little Flowers EM High School",
     year: "2018 — 2019",
-    score: "85%",
-    scoreLabel: "GPA Score",
+    score: "8.5",
+    scoreLabel: "GPA",
     details: "Foundational science and mathematics."
   }
 ];
@@ -272,74 +332,736 @@ export const PD_FLOW_STEPS: FlowStep[] = [
   {
     stepNumber: "01",
     name: "RTL Design & Verification",
-    description: "Writing and validating register-transfer level hardware descriptions in Verilog/SystemVerilog to satisfy architectural requirements.",
+    description: "Writing and validating register-transfer level hardware descriptions in Verilog/SystemVerilog. RTL expresses behavior and register boundaries before technology mapping.",
     tools: ["Synopsys VCS", "Verilog HDL"],
-    keyInputs: ["Design Specifications", "RTL Code"],
-    keyOutputs: ["Verified RTL", "Testbench Verification Reports"],
-    criticalChecks: ["Functional Simulation", "Linting & Code Coverage"]
+    keyInputs: ["Design Specifications", "RTL Code (.v / .sv)"],
+    keyOutputs: ["Verified RTL", "Simulation Waveforms & Coverage Reports"],
+    criticalChecks: ["Functional Simulation", "Synthesizability Linting", "Code Coverage >95%"],
+    tclCommands: [
+      "vcs -sverilog +v2k design.v tb.v -o simv",
+      "./simv -gui &",
+      "check_design -lint"
+    ],
+    interviewTip: "Frontend covers architecture, RTL, and functional verification. Logical equivalence (LEC/Formality) guards the RTL-to-netlist transformation down the flow.",
+    deepDive: {
+      visualType: 'tools',
+      concepts: [
+        {
+          title: "What Physical Design Actually Does",
+          points: [
+            "Register-transfer level (RTL) expresses behavior and register boundaries.",
+            "Physical design (PD) turns a technology-mapped netlist into an electrically and geometrically implementable silicon layout.",
+            "Layout must satisfy PPA (Power, Performance, Area), manufacturability, and reliability across all operating corners."
+          ]
+        }
+      ],
+      deliverablesSummary: "Verified synthesizable RTL without latches, initial blocks, or unconstrained clocks, ready for elaboration and logic synthesis."
+    }
   },
   {
     stepNumber: "02",
     name: "Logic Synthesis",
-    description: "Translating RTL into a gate-level netlist mapped to target technology standard cell libraries under timing/power constraints.",
-    tools: ["Design Compiler (DC)", "Fusion Compiler"],
-    keyInputs: ["RTL Code", "Target .db / .lib Libraries", "SDC Timing Constraints"],
-    keyOutputs: ["Gate-Level Netlist (.v)", "Design Constraints (.sdc)", "Synthesis Area/Timing Reports"],
-    criticalChecks: ["Setup Timing Slack", "Gate Count & Area Budget", "Unmapped Logic Check"]
+    description: "Translating RTL behavior into generic gates and mapping to target Liberty standard cells (.lib) under SDC timing/power constraints.",
+    tools: ["Design Compiler (DC)", "Cadence Genus", "Fusion Compiler"],
+    keyInputs: ["RTL (.v / .sv)", "Target .lib / .db Timing & Power Models", "SDC Timing Constraints", "PDK Layer Rules"],
+    keyOutputs: ["Mapped Gate-Level Netlist (.v)", "Design Constraints (.sdc)", "Synthesis QoR, Timing & Area Reports"],
+    criticalChecks: ["Setup Timing Slack (WNS/TNS)", "Unmapped Cells & Latches", "Design Rule Constraints (Max-Tran, Max-Cap)"],
+    tclCommands: [
+      "# DC_SHELL: Illustrative classic dc_shell invocation style",
+      "read_verilog {top.v block.v}",
+      "current_design top",
+      "link && check_design",
+      "source constraints.sdc",
+      "compile_ultra -gate_clock -scan",
+      "report_area",
+      "report_timing -max_paths 5 -delay_type max",
+      "write -format verilog -output syn_netlist.v",
+      "write_sdc syn_constraints.sdc"
+    ],
+    interviewTip: "A clean synthesis WNS is not proof of post-route timing! Wire parasitics, CTS insertion, and on-chip variation (OCV) are still evolving.",
+    deepDive: {
+      visualType: 'logic',
+      concepts: [
+        {
+          title: "From Behavioral RTL to Generic Logic & Cells",
+          points: [
+            "Elaboration resolves parameters, generate blocks, module hierarchy, and inferred sequential state.",
+            "Logic optimization simplifies Boolean logic, shares/restructures expressions, and restructures datapaths.",
+            "Technology mapping selects physical cells from the Liberty (.lib) library balancing timing, area, and electrical drive limits.",
+            "A netlist is NOT a physical layout: gate coordinates, power distribution, clock networks, and routed wire paths are still completely unknown."
+          ]
+        },
+        {
+          title: "Constraints Before Optimization (SDC)",
+          points: [
+            "create_clock -name clk -period 2.0 [get_ports clk]",
+            "set_input_delay 0.25 -clock clk [get_ports din]",
+            "set_output_delay 0.30 -clock clk [get_ports dout]",
+            "Setup checks maximum data delay before capture clock edge. Hold checks minimum delay after capture clock edge."
+          ]
+        },
+        {
+          title: "Trade-offs and First-Level Debugging",
+          points: [
+            "Area vs Timing: Stronger cell drive and duplication improves timing but increases silicon area and leakage; excessive downsizing degrades delay.",
+            "Dynamic Power: Toggling capacitance and operating frequency drive dynamic power; leakage depends on transistor Vth, state, and PVT corner.",
+            "Large Synthesis Area Spikes: Can be driven by over-tight clock periods, replicated high-fanout drivers, inappropriate false path exceptions, or missing physical context."
+          ]
+        }
+      ],
+      equations: [
+        {
+          name: "Setup Slack Equation",
+          formula: "Slack = Data Required Time - Data Arrival Time",
+          note: "Negative slack indicates timing violation. (e.g. Required 0.90 ns - Arrival 1.08 ns = Slack -0.18 ns VIOLATED)"
+        },
+        {
+          name: "Arrival Time Components",
+          formula: "Data Arrival = Launch Clock Path Delay + tCQ + tDATA_Logic + tWire_Estimate",
+          note: "Pre-CTS estimates use wire-load models (WLM) or placement-aware physical guidance."
+        }
+      ],
+      reportExample: {
+        title: "Illustrative Synthesis Timing Report (Max Delay Setup Path)",
+        content: `Startpoint: u_reg0/Q (launch flip-flop clocked by clk)
+Endpoint:   u_reg1/D (capture flip-flop clocked by clk)
+Path Group: clk
+Path Type:  max (setup check)
+
+  Point                               Incr       Path
+  ---------------------------------------------------
+  clock clk (rise edge)               0.00       0.00
+  clock network delay (ideal)         0.00       0.00
+  u_reg0/CLK (DFF_X1)                 0.00       0.00
+  u_reg0/Q (DFF_X1)                   0.18       0.18 r
+  u_comb/U12/Y (NAND2_X1)             0.35       0.53 f
+  u_comb/U45/Y (AOI22_X2)             0.42       0.95 r
+  u_reg1/D (DFF_X2)                   0.13       1.08 r
+  data arrival time                              1.08
+
+  clock clk (rise edge)               2.00       2.00
+  clock network delay (ideal)         0.00       2.00
+  clock uncertainty                  -0.10       1.90
+  library setup time                 -0.08       1.82
+  data required time                             0.90
+  ---------------------------------------------------
+  data required time                             0.90
+  data arrival time                             -1.08
+  ---------------------------------------------------
+  slack (VIOLATED)                              -0.18 ns`,
+        commentary: "A negative setup slack of -0.18 ns means data arrives 180 ps late. Inspect SDC clock period/uncertainty, cell sizing (NAND2_X1), high-fanout logic depth, and load capacitance before physical handoff."
+      },
+      auditChecklist: [
+        "Unmapped cells / unintended latches: Verify missing libraries, black boxes, or incomplete if/case statements.",
+        "Constraint health: Ensure no unconstrained input/output ports and review all false path/multicycle exceptions.",
+        "QoR Metrics: Critical-path depth, sequential vs combinational cell ratio, cell mix, high-fanout nets (HFN), and power dissipation.",
+        "Tool-independent handoff: Release mapped netlist (.v), constraints (.sdc), hierarchy, library versions, scan/DFT definitions, and reproducible timing QoR reports."
+      ],
+      edaComparison: [
+        {
+          role: "Synthesis Engine",
+          synopsys: "Design Compiler (dc_shell) / Fusion Compiler (compile_fusion)",
+          cadence: "Cadence Genus (genus -legacy_ui / genus)",
+          notes: "DC and Genus are direct synthesis alternatives. Syntax differs, but both translate behavioral RTL into mapped Liberty gates."
+        }
+      ],
+      pdkImpact: [
+        "Liberty (.lib) model provides cell propagation delays, transition look-up tables (LUTs), pin capacitances, and leakage states.",
+        "Technology operating corners (SS, TT, FF) dictate voltage/temperature scaling and transistor channel mobility."
+      ],
+      deliverablesSummary: "Gate-level netlist (.v), clean SDC constraints file, QoR summary report, and scan insertion verification logs."
+    }
   },
   {
     stepNumber: "03",
     name: "Floorplanning & Power Mesh",
-    description: "Defining core boundary, aspect ratio, IO pin locations, macro placement, halos, and constructing power distribution rings and stripes.",
-    tools: ["Synopsys ICC2", "Fusion Compiler"],
-    keyInputs: ["Synthesized Netlist", "Technology LEF / NDM", "Floorplan Constraints"],
-    keyOutputs: ["DEF / NDM with Die Boundary & Macros", "Power Grid (VDD / VSS Mesh)"],
-    criticalChecks: ["Core Utilization Ratio", "Macro Halo Spacing & Flylines", "IR Drop & Electromigration Checks"]
+    description: "Defining core/die geometry, macro channels, halo keepouts, pin placement, and designing low-IR-drop Power Delivery Networks (PDN).",
+    tools: ["Synopsys ICC2", "Cadence Innovus", "Fusion Compiler"],
+    keyInputs: ["Synthesized Netlist (.v)", "Technology LEF / NDM", "Macro Abstracts / LEFs", "SDC Constraints", "UPF / Power Intent"],
+    keyOutputs: ["Floorplanned DEF / NDM Database", "VDD/VSS Power Grid Mesh", "Macro Halos & Keepout Margins", "Floorplan Decisions Log"],
+    criticalChecks: ["Core Utilization Ratio", "Macro Halo Spacing & Channel Corridors", "Static & Dynamic IR Drop Budget", "Power Continuity & Short Checks"],
+    tclCommands: [
+      "# ICC2 / Fusion: Initialize Floorplan & Define Core Geometry",
+      "initialize_floorplan -core_utilization 0.60 -shape R -side_ratio {1.0 1.0} -core_offset {15 15 15 15}",
+      "# Macro placement & halos",
+      "create_keepout_margin -type hard -outer {12 12 12 12} [get_cells -filter \"is_hard_macro==true\"]",
+      "create_placement_blockage -type hard -boundary {{10 10} {200 40}}",
+      "# Pin placement & PG Mesh",
+      "place_pins -ports [get_ports *] -layer {M4 M5}",
+      "create_pg_ring -nets {VDD VSS} -layers {M7 M8} -widths {4 4} -spacings {2 2}",
+      "create_pg_mesh_pattern -layers {{M7} {M8}}",
+      "check_pg_connectivity -check_floating_pins"
+    ],
+    interviewTip: "A 65% utilization target is NOT a universal best practice! Timing, macro mix, pin accessibility, power strap consumption, and router channel capacity determine feasible density.",
+    deepDive: {
+      visualType: 'floorplan',
+      concepts: [
+        {
+          title: "Initialize & Define Geometry",
+          points: [
+            "Import netlist, timing corners, RC tech/LEF, cell/macro abstracts, MMMC views, and physical rules.",
+            "Die bounds the total chip; Core contains the legal standard-cell rows and channel corridors.",
+            "Approximate Utilization = Placed Standard-Cell Area ÷ Available Placement Area (macro/obstacle treatment must be explicitly stated)."
+          ]
+        },
+        {
+          title: "Macro Placement Methodology",
+          points: [
+            "Cluster communicating macros together; orient macro pins toward partner macros or core logic.",
+            "Reserve wide bus corridors and avoid narrow channels (< 2-3x metal routing pitch).",
+            "Apply halos/keepouts and placement blockages, including clock and power strap access around edges.",
+            "Check pin-access hot spots BEFORE standard-cell placement; do not pin macros solely to minimize estimated wirelength."
+          ]
+        },
+        {
+          title: "Power Delivery Network (PDN) & Cell Placement",
+          points: [
+            "PDN structure: Rings, vertical/horizontal straps, macro hooks, and cell-row rails distribute VDD/VSS.",
+            "Validate PG continuity, via access, and preliminary IR drop budget BEFORE running detailed timing optimization.",
+            "Preview placement and global-route feasibility before freezing macro channels or committing to dense PG straps."
+          ]
+        },
+        {
+          title: "Diagnosis: Congestion versus Density",
+          points: [
+            "Congestion is routing demand divided by available track/capacity resources in a region, not just cell occupancy.",
+            "A 50% utilized block can still suffer severe routing choke points near macro pins or in narrow channels."
+          ]
+        }
+      ],
+      equations: [
+        {
+          name: "Quick Utilization Example",
+          formula: "Utilization = Placed Cell Area ÷ Available Row Area = 42,000 µm² ÷ 70,000 µm² = 60.0%",
+          note: "Exclude macro footprints and blockages properly, and separately track local hotspot density."
+        },
+        {
+          name: "Channel Width Calculation",
+          formula: "Min Channel Width = (Number of Connecting Routing Tracks × Track Pitch) + Halo Margin",
+          note: "Prevents routing congestion choke points between adjacent SRAMs/IP macros."
+        }
+      ],
+      debuggingPatterns: [
+        {
+          problem: "Routing Congestion Choke Point Near Macro Edge",
+          symptom: "High routing overflow concentrated along one macro boundary; long wire detours and rapidly degrading setup slacks.",
+          verify: "Compare placement heatmap with global-route GRC estimates, macro pin density, PG strap blockages, and preferred metal wire direction.",
+          fix: "Increase macro channel width, rotate macro so pins face the core, spread high-fanout cell clusters, and re-run trial placement & global route."
+        }
+      ],
+      commonMistakes: [
+        "Overlooking macro PG/pin-side connectivity; creating channels too narrow for pins and power straps.",
+        "Excessive cell utilization concentrated in one local region while global chip utilization looks normal.",
+        "Treating a green placement congestion map as timing closure or assuming placement DRC implies clean final route.",
+        "Blindly resizing setup paths: high-drive cells have larger input capacitances and can worsen local pin congestion and leakage."
+      ],
+      auditChecklist: [
+        "Die and core boundary, aspect ratio, utilization, and macro orientations approved.",
+        "Power domains, PG pins, and row rails consistent with UPF and architectural power intent.",
+        "Placeable area, macro keepouts, clock tree sources, and I/O pin positions validated.",
+        "Power connectivity verification (LVS-clean PG mesh without opens or shorts)."
+      ],
+      edaComparison: [
+        {
+          role: "Floorplan Initialization",
+          synopsys: "initialize_floorplan (ICC2/FC)",
+          cadence: "initialize_floorplan / floorPlan (Innovus)",
+          notes: "Both establish core rows, boundary offsets, macro positions, and create PG mesh structures."
+        }
+      ],
+      deliverablesSummary: "Exported placed database/DEF, power-connectivity checks, utilization breakdown by region, global congestion map, and floorplan decisions log."
+    }
   },
   {
     stepNumber: "04",
     name: "Standard Cell Placement",
-    description: "Placing all standard logic cells inside core rows with congestion-driven and timing-driven algorithms to minimize wire delays.",
-    tools: ["Synopsys ICC2", "Fusion Compiler"],
-    keyInputs: ["Power Placed DEF", "SDC Constraints"],
-    keyOutputs: ["Placed Design", "Global Route Congestion Map", "Pre-CTS Timing Report"],
-    criticalChecks: ["Cell Density & Congestion Hotspots", "Setup WNS / TNS Check", "Pin Access Checks"]
+    description: "Placing all standard logic cells inside legal rows with congestion-driven and timing-driven algorithms to minimize wire delays.",
+    tools: ["Synopsys ICC2", "Fusion Compiler", "Cadence Innovus"],
+    keyInputs: ["Power Placed DEF / Database", "SDC Timing Constraints", "Routing Tech LEF / TLU+"],
+    keyOutputs: ["Legalized Placed Design Database", "Global Route Congestion Map (GRC)", "Pre-CTS Setup Timing & QoR Reports"],
+    criticalChecks: ["Local Cell Density vs Routing Congestion", "Setup WNS / TNS Check", "Pin Access & DRC Legality"],
+    tclCommands: [
+      "# ICC2 / Fusion Compiler: Placement & Optimization Flow",
+      "check_legality",
+      "place_opt -from initial_place -to final_opto",
+      "report_congestion -grc_based",
+      "report_timing -delay_type max -max_paths 20",
+      "report_qor",
+      "# Cadence Innovus equivalent: place_opt_design / place_design"
+    ],
+    interviewTip: "Distinguish between global placement (wirelength/timing optimization without overlap constraints) and legalization (snapping cells onto discrete row sites and legal power rails without overlaps).",
+    deepDive: {
+      visualType: 'floorplan',
+      concepts: [
+        {
+          title: "Three Placement Phases",
+          points: [
+            "Global Placement: Spreads cells across core rows to minimize estimated total wirelength, timing delays, and routing congestion.",
+            "Legalization: Snaps floating cells onto valid site rows without overlapping, obeying standard cell height and power rail alignment.",
+            "Detailed Placement: Performs local swaps, spacing adjustments, and pin-access improvements without disrupting global wire paths.",
+            "Timing-driven placement favors shorter wire connections along critical paths to protect setup slack."
+          ]
+        },
+        {
+          title: "Version-Aware Tool Invocations",
+          points: [
+            "Synopsys ICC2 / Fusion Compiler: place_opt, report_timing, check_legality.",
+            "Cadence Innovus: place_design / place_opt_design, report_timing.",
+            "Never substitute command names mechanically between EDA vendors; check specific release notes and methodology guides."
+          ]
+        }
+      ],
+      debuggingPatterns: [
+        {
+          problem: "High Pin-Density Congestion in Local GRC Bins",
+          symptom: "Global router reports severe overflow in standard cell clusters despite average chip utilization being under 65%.",
+          verify: "Inspect pin count per unit area in congested bins; check for tightly packed multiplexers or multi-bit registers.",
+          fix: "Apply partial placement blockages (e.g. 70% density screen), assign cell padding on complex cells, or buffer high-fanout nets."
+        }
+      ],
+      commonMistakes: [
+        "Running timing optimization before verifying placement legality.",
+        "Ignoring pin-access hot spots; tightly abutted complex cells can prevent detailed router from accessing M1/M2 pins.",
+        "Over-constraining placement with excessive hard blockages, which forces cells into unnatural congestion choke points."
+      ],
+      deliverablesSummary: "100% legalized placed cell database, global routing congestion map, pre-CTS timing QoR report, and high-fanout net report."
+    }
   },
   {
     stepNumber: "05",
-    name: "Clock Tree Synthesis (CTS)",
-    description: "Building balanced clock distribution trees using inverter/buffer trees or meshes to minimize clock skew and insertion delay.",
-    tools: ["Synopsys ICC2", "Fusion Compiler"],
-    keyInputs: ["Placed Design", "Clock Non-Default Routing Rules (NDR)"],
-    keyOutputs: ["CTS Placed Netlist", "Clock Tree Slew / Skew Reports"],
-    criticalChecks: ["Max Skew Budget", "Clock Latency / Insertion Delay", "Hold Time Violations Resolution"]
+    name: "Clock Tree Synthesis & Optimization",
+    description: "Synthesizing balanced clock distribution trees, controlling insertion delay, minimizing skew, and handling clock gating and post-CTS hold closure.",
+    tools: ["Synopsys ICC2", "Fusion Compiler", "Cadence Innovus (CCOpt)"],
+    keyInputs: ["Placed & Legalized Design", "Clock Non-Default Routing Rules (NDR)", "SDC Clock Definitions & Exceptions", "Clock Gating Cell (ICG) Models"],
+    keyOutputs: ["CTS Netlist with Synthesized Clock Trees", "Clock Tree Slew, Skew & Latency Reports", "Post-CTS Propagated Timing Reports (Setup & Hold)"],
+    criticalChecks: ["Global & Local Clock Skew Budgets", "Max Clock Insertion Delay (Latency)", "Hold Time Violations (Min Path Closure)", "Clock Gating Setup/Hold Checks"],
+    tclCommands: [
+      "# ICC2 / Fusion Compiler: Clock Tree Synthesis & NDR Setup",
+      "create_routing_rule NDR_2W2S -widths {M4 0.2 M5 0.2} -spacings {M4 0.2 M5 0.2}",
+      "set_clock_routing_rules -rules NDR_2W2S -clocks [get_clocks *]",
+      "clock_opt -from build_clock -to route_clock",
+      "report_clock_tree_summary",
+      "report_clock_timing -type skew",
+      "report_timing -delay_type min_max",
+      "# Cadence Innovus equivalent: ccopt_design, report_ccopt_clock_trees"
+    ],
+    interviewTip: "Useful Skew selectively delays capture clocks to fix setup violations on critical paths. However, every picosecond of positive skew directly reduces hold margin on that same edge!",
+    deepDive: {
+      visualType: 'cts',
+      concepts: [
+        {
+          title: "Why Clock Distribution is Special",
+          points: [
+            "Before CTS: Clock is treated as ideal or modeled with estimated virtual latency and zero physical skew.",
+            "After CTS: A physical network of buffers/inverters drives sequential clock pins; propagated clocks model actual path delays.",
+            "Balance improves robustness, but zero skew is neither always possible nor optimal.",
+            "Insertion Delay: Clock-source-to-sink transit time. Skew: Capture clock arrival minus launch clock arrival for a given timing path.",
+            "Uncertainty: Reserves margin for clock jitter, PLL phase noise, and on-chip process modeling variation."
+          ]
+        },
+        {
+          title: "What Changes After CTS",
+          points: [
+            "Clock propagation transforms pre-CTS timing assumptions fundamentally.",
+            "A capture-late clock (+skew) helps setup timing but hurts hold timing on same-edge paths.",
+            "A capture-early clock (-skew) helps hold timing but hurts setup timing.",
+            "Both max (setup) and min (hold) corners must be evaluated with updated propagated clocks and Clock Reconvergence Pessimism Removal (CRPR)."
+          ]
+        },
+        {
+          title: "Reports: Read Beyond One Number",
+          points: [
+            "Insertion Latency: Compare source and network components per sink/group, not only mean delay.",
+            "Skew Distribution: Check local, endpoint-pair, and worst skew, not just the global headline number.",
+            "Electrical Targets: Inspect clock slew, capacitance, fanout limits, buffer usage, and gate-enable timing.",
+            "Clock Power: Track inserted buffer counts, dynamic switching power, and placement perturbation caused by tree insertion."
+          ]
+        }
+      ],
+      equations: [
+        {
+          name: "Simplified Setup Margin with Skew",
+          formula: "Tsetup_margin = Tclk + Skew - Uncertainty - tCQ - tDATA - tSETUP",
+          note: "Skew = Tcapture - Tlaunch. Positive skew increases setup margin."
+        },
+        {
+          name: "Simplified Hold Margin with Skew",
+          formula: "Thold_margin = tCQ_min + tDATA_min - Skew - tHOLD - Hold_Uncertainty",
+          note: "Positive skew subtracts directly from hold margin, creating hold violations on fast paths."
+        }
+      ],
+      reportExample: {
+        title: "Numerical Clock Skew Calculation Example",
+        content: `Capture Clock Arrival Time:  0.23 ns  (at capture flip-flop clock pin)
+Launch Clock Arrival Time:   0.15 ns  (at launch flip-flop clock pin)
+-----------------------------------------------------------------
+Clock Skew (Capture - Launch):  +0.08 ns (+80 ps)
+
+Setup Impact:  +80 ps added to available cycle time (helps critical setup path)
+Hold Impact:   -80 ps subtracted from data margin (worsens short-path hold check)
+Verdict:       Beneficial for setup on critical path, but must verify hold at fast-fast (FF) corner!`,
+        commentary: "Clock skew is path-specific, not a single chip-wide number. While useful skew can solve setup paths, real signoff must verify both setup and hold margins across all active MMMC corners."
+      },
+      debuggingPatterns: [
+        {
+          problem: "Pattern 1: Unusually Large Clock Skew (> 150 ps)",
+          symptom: "Skew distribution reports show large variance between leaf sinks in the same clock domain.",
+          verify: "Check asymmetric clock routing detours, unplaced clock buffers, unbalanced sink capacitive loads, macro keepout obstructions, and unintended useful-skew settings.",
+          fix: "Apply Non-Default Routing (NDR 2W2S) on clock trunks, relocate clock root buffers closer to center of mass, and equalize sink cluster load distributions."
+        },
+        {
+          problem: "Pattern 2: Many Post-CTS Hold Time Violations",
+          symptom: "Hundreds of hold violations appear on short data paths immediately following clock tree propagation.",
+          verify: "Investigate fast data paths (e.g. back-to-back registers with no intervening combinational logic), changed capture latency, fast process corner (FF), and aggressive setup optimization.",
+          fix: "Insert hold-delay buffers/inverters on short data paths, re-balance clock branches, and verify Clock Reconvergence Pessimism Removal (CRPR) is enabled."
+        },
+        {
+          problem: "Pattern 3: Clock Gating & Enable Timing Violations",
+          symptom: "Setup or hold timing fails on the enable pin of Integrated Clock Gating (ICG) cells.",
+          verify: "Validate generated clock definitions, check enable timing paths, verify ICG library arc models, and inspect exception scopes.",
+          fix: "Place ICG cells close to their enable generation source, upsize enable drivers, or adjust clock gating latch margins."
+        }
+      ],
+      commonMistakes: [
+        "Fixing one clock tree branch in isolation without re-evaluating setup, hold, SI, DRC, and all active timing views.",
+        "Omitting Clock Reconvergence Pessimism Removal (CRPR), leading to over-pessimistic hold timing on shared clock tree branches.",
+        "Counting uncertainty twice: specifying jitter both in SDC uncertainty and as additional tool derate."
+      ],
+      auditChecklist: [
+        "Confirm clock definitions, generated clocks, and false path/multicycle exceptions.",
+        "Inspect skew, insertion delay, clock transitions, and tree depth across all clock groups.",
+        "Verify clock gating checks (setup and hold on ICG enable pins).",
+        "Signoff thinking: Audit clock reconvergence, propagated-clock activation, duplicate clock definitions, and uncertainty consistency."
+      ],
+      edaComparison: [
+        {
+          role: "Clock Tree Synthesis & Optimization",
+          synopsys: "clock_opt (ICC2 / Fusion Compiler)",
+          cadence: "ccopt_design (Innovus CCOpt)",
+          notes: "Innovus CCOpt integrates clock synthesis directly with datapath placement optimization; ICC2 uses clock_opt with concurrent clock/data optimization."
+        }
+      ],
+      deliverablesSummary: "CTS synthesized database with balanced clock trees, clock skew/latency summary reports, and post-CTS setup/hold timing QoR."
+    }
   },
   {
     stepNumber: "06",
     name: "Routing (Global & Detailed)",
-    description: "Interconnecting standard cells and macros using metal layers following foundry design rules, with crosstalk prevention.",
-    tools: ["Synopsys ICC2", "Fusion Compiler"],
-    keyInputs: ["CTS Completed Design", "Technology Rules File"],
-    keyOutputs: ["Fully Routed Layout", "Post-Route Extraction (SPEF)"],
-    criticalChecks: ["DRC Violations (Spacing, Shorts)", "Signal Integrity & Crosstalk Noise", "Antenna Violations"]
+    description: "Interconnecting standard cells and macros through multi-layer metal corridors, resolving crosstalk coupling noise, antenna violations, and DRCs.",
+    tools: ["Synopsys ICC2", "Fusion Compiler", "Cadence Innovus"],
+    keyInputs: ["CTS Completed Design Database", "Technology DRC Rules File", "Antenna Rule Decks", "Parasitic Extraction Models (TLU+)"],
+    keyOutputs: ["Fully Routed Layout Database (DEF)", "Route DRC & Connectivity Reports", "Antenna Violation Reports", "Post-Route SPEF Extraction"],
+    criticalChecks: ["Zero Open / Short DRC Markers", "Signal Integrity (SI) Crosstalk Delta-Delay", "Antenna Ratio Violations", "Via Enclosure & Spacing Minimums"],
+    tclCommands: [
+      "# ICC2 / Fusion: Global & Detailed Routing Operations",
+      "route_auto",
+      "route_opt -effort high -xtalk_reduction",
+      "check_routes",
+      "report_route_status",
+      "report_timing -delay_type min_max -crosstalk_delta",
+      "extract_rc -spef",
+      "# Cadence Innovus equivalent: routeDesign / route_opt_design"
+    ],
+    interviewTip: "Never attempt to fix route DRCs before resolving placement congestion! Use the 'Locate Before Repairing' workflow: cross-probe DRC coordinate → layer → shape → pin access point.",
+    deepDive: {
+      visualType: 'routing',
+      concepts: [
+        {
+          title: "Routing Stages and Resources",
+          points: [
+            "Global Routing assigns tentative routing corridors across grid bins (GRC) and exposes regional overflow.",
+            "Detailed Routing chooses specific metal tracks, vias, and shapes obeying foundry manufacturing and electrical rules.",
+            "Routing layers have strict preferred directions (e.g. M1 horizontal, M2 vertical, M3 horizontal) and PDK minimum width/spacing rules.",
+            "Congestion overflow indicates demand exceeding estimated capacity; a locally routed net may still detour despite a good global summary."
+          ]
+        },
+        {
+          title: "Signal Integrity & Crosstalk",
+          points: [
+            "Nearby parallel nets share coupling capacitance (Cc).",
+            "An aggressor transition can alter victim net delay (speed up or slow down) or induce a functional glitch.",
+            "SI-aware timing uses coupling capacitance and aggressor timing windows instead of assuming all nets remain quiet."
+          ]
+        },
+        {
+          title: "Antenna Effect & Protection",
+          points: [
+            "During plasma etching, long metal interconnect segments accumulate static electric charge.",
+            "If the charge has no discharge path to substrate, it discharges through thin gate oxides, destroying transistors.",
+            "Fixes involve inserting reverse-biased antenna diode cells or 'layer hopping' (jumping to higher metal closer to gate)."
+          ]
+        },
+        {
+          title: "Critical Net Treatment",
+          points: [
+            "Shielding with VSS lines reduces crosstalk noise but consumes double the routing tracks; reserve for clocks and sensitive analog lines.",
+            "Non-Default Rules (NDR 2W2S): Wire widening and double spacing reduce RC delay and cross-coupling.",
+            "Always check incremental routing changes against hold, EM, area, and DRC, not only setup WNS."
+          ]
+        }
+      ],
+      equations: [
+        {
+          name: "A Simple Overflow Thought Experiment",
+          formula: "Overflow = Track Demand - Capacity Resources (e.g. 120 demand - 100 capacity = 20 units overflow)",
+          note: "Reducing cell utilization alone will NOT fix blocked tracks if the root cause is a macro boundary edge or dense PDN power straps."
+        },
+        {
+          name: "Antenna Ratio Rule",
+          formula: "Antenna Ratio = Total Exposed Metal Area ÷ Connected Gate Oxide Area ≤ Max Permitted Ratio",
+          note: "When ratio exceeds foundry limits, an antenna diode must be connected to provide a safe discharge path to substrate."
+        }
+      ],
+      debuggingPatterns: [
+        {
+          problem: "Overflow Hot Spot at Channel Bottleneck",
+          symptom: "Severe routing congestion and high DRC marker concentration in channels between macro edges.",
+          verify: "Verify macro channel width, excessive power stripes, or localized routing demand.",
+          fix: "Adjust floorplan geometry, widen macro channels, add partial routing blockages, and re-route affected nets."
+        },
+        {
+          problem: "Excessive Via Count & Via Stack Resistance",
+          symptom: "High via density causing resistive voltage drops, timing degradation, and yield vulnerability.",
+          verify: "Investigate routing detours, forced layer constraints, forbidden via stacks, or fragmented tracks.",
+          fix: "Promote long critical nets to upper low-resistance metal layers (M5-M7); run redundant via insertion."
+        },
+        {
+          problem: "Slow Critical Net with High Post-Route RC",
+          symptom: "Net delay increases drastically post-route due to detour routing and high parasitic capacitance.",
+          verify: "Separate cell delay from extracted net delay in post-route timing report.",
+          fix: "Improve cell placement locality, insert pipeline buffers, and assign preferred routing layers with NDR rules."
+        },
+        {
+          problem: "Antenna Markers During DRC Signoff",
+          symptom: "Foundry antenna rule deck flags long metal traces exceeding gate oxide ratio.",
+          verify: "Check antenna signoff rule deck, verify layer on which violation triggers.",
+          fix: "Run router antenna-fix pass, insert authorized diode cells close to receiver gates, or apply layer hopping."
+        }
+      ],
+      commonMistakes: [
+        "Confusing electrical violations (max transition / max cap) with geometric DRC markers; repair priorities depend on severity.",
+        "Over-shielding nets, resulting in track starvation and secondary routing congestion.",
+        "Repeatedly re-running detailed routing without fixing the underlying floorplan or placement congestion."
+      ],
+      auditChecklist: [
+        "Locate before repairing: Start from exact error coordinates, net name, layer, shape, and pin access point.",
+        "Zero open circuits, zero short circuits, and zero spacing/width DRC violations.",
+        "Signal integrity crosstalk delta-delay verified with prime extraction SPEF.",
+        "Antenna violations 100% resolved via diode insertion or layer hopping."
+      ],
+      edaComparison: [
+        {
+          role: "Global & Detailed Routing",
+          synopsys: "route_auto / route_opt (ICC2 / Fusion Compiler)",
+          cadence: "routeDesign / route_opt_design (Innovus)",
+          notes: "Both perform global routing corridor assignment, track assignment, detailed shape routing, and concurrent DRC/timing optimization."
+        }
+      ],
+      deliverablesSummary: "Routed design database (DEF), connectivity and DRC reports, congestion maps, antenna status, and extraction-ready metal geometry."
+    }
   },
   {
     stepNumber: "07",
     name: "Physical Signoff (STA & DRC/LVS)",
-    description: "Comprehensive multi-corner Static Timing Analysis and golden geometric/connectivity verification to ensure silicon fabrication readiness.",
-    tools: ["Synopsys PrimeTime", "IC Validator / Calibre"],
-    keyInputs: ["SPEF Parasitics", "Signoff Netlist", "GDSII / OASIS", "Foundry Rule Decks"],
-    keyOutputs: ["Golden Signoff Timing Reports (Setup/Hold/Max-Tran)", "DRC / LVS Signoff Logs"],
-    criticalChecks: ["Zero Setup/Hold Slack Violations", "100% DRC Clean (Spacing, Enclosure)", "100% LVS Clean (Netlist vs Layout Match)"]
+    description: "Golden multi-corner Static Timing Analysis, parasitic RC extraction, and physical design rule/connectivity verification.",
+    tools: ["Synopsys PrimeTime", "StarRC", "IC Validator", "Siemens Calibre"],
+    keyInputs: ["Post-Route SPEF / DSPF Parasitics", "Signoff Gate Netlist", "Foundry DRC/LVS Decks", "Multi-Corner Liberty (.lib)"],
+    keyOutputs: ["Golden Signoff Timing Reports (Setup, Hold, Max-Tran, Min-Period)", "DRC / LVS Signoff Verification Logs", "ERC / ESD / Antenna Signoff Reports"],
+    criticalChecks: ["Zero Setup / Hold Slack Violations Across All PVT Corners", "100% DRC Clean (Spacing, Enclosure, Density)", "100% LVS Clean (Layout vs Schematic 1:1 Match)"],
+    tclCommands: [
+      "# PrimeTime: Multi-Corner Signoff STA",
+      "read_verilog signoff_netlist.v",
+      "read_parasitics -format SPEF design.spef",
+      "update_timing -full",
+      "report_timing -delay_type min_max -path_type full_clock_expanded",
+      "report_constraint -all_violators",
+      "# IC Validator / Calibre Signoff DRC/LVS",
+      "run_drc -hierarchical -deck calibre_drc.rule",
+      "run_lvs -deck calibre_lvs.rule -source schematic.netlist"
+    ],
+    interviewTip: "Operational Rule: An EDA result is credible only with the exact library, constraint, corner versions, tool build, source revision, and run configuration recorded!",
+    deepDive: {
+      visualType: 'signoff',
+      concepts: [
+        {
+          title: "The Actual Project Depends on the PDK",
+          points: [
+            "Technology: Process Design Kit (PDK), layer rules, standard-cell and macro characterization, permitted RC corners, and signoff decks.",
+            "Timing Modes: Clocks, uncertainty, I/O budgets, false/multicycle exceptions, operating voltages/temperatures, and On-Chip Variation (AOCV/POCV).",
+            "Quality Gates: Setup/hold, fanout/slew/capacitance, congestion, DRC/LVS, IR drop, and Electromigration (EM)."
+          ]
+        },
+        {
+          title: "EDA Tool Roles: Alternatives vs Partners",
+          points: [
+            "Synopsys Flow: PrimeTime (STA/SI), StarRC (Extraction), IC Validator (DRC/LVS), Formality (Formal Equivalence).",
+            "Cadence Flow: Tempus (STA), Quantus (Extraction), Voltus (Power/EMIR), Conformal (Equivalence).",
+            "Siemens EDA: Calibre (Industry golden standard for physical verification DRC/LVS).",
+            "Open Ecosystem: OpenSTA (Timing engine), KLayout/Magic (Layout inspection and DRC)."
+          ]
+        },
+        {
+          title: "Stage Dependencies That Cause Feedback Loops",
+          points: [
+            "Placement ↔ Synthesis: Physically poor logic depth or fanout requires RTL/synthesis restructuring.",
+            "CTS ↔ Hold: Aggressive clock balancing can create short-path hold failures.",
+            "Route ↔ Timing: Real wire RC parasitics change critical path rankings and setup slacks.",
+            "PDN ↔ Congestion: Heavy power delivery straps consume routing tracks, creating local routing congestion."
+          ]
+        }
+      ],
+      auditChecklist: [
+        "Signed netlist and SDC constraints verified against RTL hash.",
+        "Layout database, GDSII/OASIS, and SPEF parasitics matched to signoff revision.",
+        "Golden DRC/LVS decks run with foundry release version; all waiver items formally recorded in the waiver ledger.",
+        "Signoff manifest documenting tool builds, library releases, and run configuration parameters."
+      ],
+      deliverablesSummary: "Signoff package: Signed netlist/constraints, layout database and GDS, timing/extraction corners, physical decks and reports, open-issue/waiver ledger, tool-version manifest, and reproducible run scripts."
+    }
   },
   {
     stepNumber: "08",
     name: "GDSII / Tape-Out Stream",
-    description: "Exporting golden hierarchical binary layout stream (GDSII/OASIS) ready to be transferred to the semiconductor foundry for mask fabrication.",
-    tools: ["ICC2 StreamOut", "Fusion Compiler"],
-    keyInputs: ["Signoff Clean Database", "Layer Map File"],
-    keyOutputs: ["GDSII / OASIS File", "Checksum & Mask Documentation"],
-    criticalChecks: ["Boundary Layer Seal Rings", "Stream-Out Integrity Check", "Foundry Tape-Out Checklist"]
+    description: "Exporting golden hierarchical binary layout stream (GDSII / OASIS) ready for mask generation and foundry silicon fabrication.",
+    tools: ["ICC2 StreamOut", "Fusion Compiler", "Cadence Innovus StreamOut"],
+    keyInputs: ["Signoff Clean Layout Database", "Foundry Layer Map File (.map)"],
+    keyOutputs: ["GDSII / OASIS Binary Stream", "Checksum Manifest & Mask Documentation", "Tape-Out Signoff Signatures"],
+    criticalChecks: ["Boundary Layer Seal Rings", "Stream-Out Integrity & Layer Mapping", "Foundry Tape-Out Checklist"],
+    tclCommands: [
+      "# Export Mask-Layout Data (GDSII / OASIS)",
+      "write_gds -layer_map gds.map -view design -output tapeout_design.gds",
+      "write_oasis -output tapeout_design.oasis",
+      "write_def -output signoff_final.def",
+      "# Compute SHA-256 Checksum",
+      "sha256sum tapeout_design.gds > tapeout_design.gds.sha256"
+    ],
+    interviewTip: "Key distinction: OASIS provides 10-50x file size compression over legacy GDSII format, reducing mask prep data transfer times for advanced sub-16nm nodes.",
+    deepDive: {
+      visualType: 'tools',
+      concepts: [
+        {
+          title: "GDSII vs OASIS Format",
+          points: [
+            "GDSII (Graphic Design System II): Historic industry standard binary stream format representing planar geometric shapes, text labels, and hierarchy.",
+            "OASIS (Open Artwork System Interchange Standard): Modern compact standard featuring 10-50x compression, essential for multi-gigabyte modern mask data.",
+            "Layer Map: Maps internal EDA design layer numbers to actual foundry mask numbers and data types."
+          ]
+        }
+      ],
+      deliverablesSummary: "Foundry-ready GDSII/OASIS mask stream, MD5/SHA-256 checksums, layer mapping verification log, and formal customer-foundry signoff agreement."
+    }
+  }
+];
+
+export const VLSI_TOOLS_ECOSYSTEM: VlsiToolRole[] = [
+  {
+    category: "Logic Synthesis",
+    synopsys: "Design Compiler (DC) / Fusion Compiler",
+    cadence: "Genus Synthesis Solution",
+    openSource: "Yosys",
+    notes: "Direct synthesis alternatives; translates behavioral RTL into mapped Liberty gate netlists."
+  },
+  {
+    category: "Place & Route (P&R)",
+    synopsys: "IC Compiler II (ICC2) / Fusion Compiler",
+    cadence: "Innovus Implementation System",
+    openSource: "OpenROAD",
+    notes: "Core physical implementation engines; manage floorplan, power mesh, placement, CTS, and detailed routing."
+  },
+  {
+    category: "Static Timing Analysis (STA)",
+    synopsys: "PrimeTime (PT) / PrimeTime-SI",
+    cadence: "Tempus Timing Signoff Solution",
+    openSource: "OpenSTA",
+    notes: "Golden signoff timing analysis with Signal Integrity (SI) crosstalk delta-delay and AOCV/POCV variation."
+  },
+  {
+    category: "Parasitic Extraction",
+    synopsys: "StarRC",
+    cadence: "Quantus Extraction Solution",
+    notes: "Extracts physical interconnect resistance and capacitance into SPEF/DSPF formats for accurate timing."
+  },
+  {
+    category: "Physical Verification (DRC/LVS)",
+    synopsys: "IC Validator (ICV)",
+    cadence: "Pegasus Verification System",
+    siemens: "Mentor Calibre (Industry Golden Standard)",
+    openSource: "Magic / KLayout",
+    notes: "Golden geometric design rule checks (DRC) and layout-versus-schematic (LVS) electrical connectivity verification."
+  },
+  {
+    category: "Power Integrity & EM/IR",
+    synopsys: "PrimePower / RedHawk",
+    cadence: "Voltus IC Power Integrity Solution",
+    notes: "Simulates static and dynamic IR voltage drops, power grid electromigration (EM), and thermal effects."
+  },
+  {
+    category: "Formal Equivalence (LEC)",
+    synopsys: "Formality",
+    cadence: "Conformal LEC",
+    notes: "Mathematically proves logical equivalence between RTL, synthesized netlist, and final post-route netlist."
+  }
+];
+
+export const VLSI_FILE_FORMATS: VlsiFileFormat[] = [
+  {
+    extension: ".lib / .db",
+    name: "Liberty Timing & Power Model",
+    purpose: "Defines standard-cell and macro timing delays, setup/hold constraints, transition look-up tables (LUTs), and leakage/dynamic power data.",
+    stageProduced: "Library Characterization (Silicon Foundries)"
+  },
+  {
+    extension: ".lef",
+    name: "Library Exchange Format",
+    purpose: "Abstract physical geometry for standard cells and macros: outlines bounding box, pin coordinates, and metal routing blockages without disclosing internal transistor layout.",
+    stageProduced: "Library & IP Providers"
+  },
+  {
+    extension: ".sdc",
+    name: "Synopsys Design Constraints",
+    purpose: "Industry standard constraint syntax defining clock periods, clock uncertainty/latency, input/output port delays, and false/multicycle exceptions.",
+    stageProduced: "RTL / Logic Synthesis / STA"
+  },
+  {
+    extension: ".def",
+    name: "Design Exchange Format",
+    purpose: "Represents placed and routed physical design geometry: die boundary, core rows, cell placement coordinates, orientations, and routed metal wire paths/vias.",
+    stageProduced: "P&R Implementation Engines (ICC2/Innovus)"
+  },
+  {
+    extension: ".spef",
+    name: "Standard Parasitic Exchange Format",
+    purpose: "Describes extracted parasitic resistance (R) and ground/coupling capacitance (C) for every routed interconnect net in the layout.",
+    stageProduced: "Parasitic Extraction Tools (StarRC / Quantus)"
+  },
+  {
+    extension: ".gds / .oasis",
+    name: "Mask Layout Data Stream",
+    purpose: "Golden hierarchical binary stream containing all polygon layers, shapes, and coordinates for lithography mask manufacturing in the semiconductor fab.",
+    stageProduced: "Tape-Out Stream-Out (ICC2 / Innovus)"
+  }
+];
+
+export const STAGE_DEPENDENCY_LOOPS: StageDependencyLoop[] = [
+  {
+    stagePair: "Placement ↔ Synthesis",
+    cause: "Physically poor logic depth or high-fanout trees",
+    impact: "Unroutable cell congestion or unfixable setup timing slacks require RTL restructuring or synthesis re-mapping."
+  },
+  {
+    stagePair: "CTS ↔ Hold Timing",
+    cause: "Clock skew balancing on fast data paths",
+    impact: "Equalizing clock arrival at leaf registers can cause hold violations on short, back-to-back flip-flop connections."
+  },
+  {
+    stagePair: "Route ↔ Timing Closure",
+    cause: "Wire detour routing and coupling capacitance",
+    impact: "Post-route wire parasitics (SPEF) deviate from placement estimates, altering critical path delay ranking."
+  },
+  {
+    stagePair: "PDN Mesh ↔ Congestion",
+    cause: "Overly dense VDD/VSS power straps",
+    impact: "Strong power grids reduce IR drop, but consume upper metal routing tracks, causing severe detailed routing congestion."
   }
 ];
 
@@ -403,11 +1125,11 @@ export const KNOWLEDGE_AREAS: KnowledgeArea[] = [
 ];
 
 export const STATS_DATA: StatItem[] = [
-  { number: "3", label: "Full RTL‑to‑GDSII training projects", accent: "cyan" },
+  { number: "4", label: "Full RTL‑to‑GDSII & SoC physical design projects", accent: "cyan" },
   { number: "10%", label: "Wire length reduction on RISC‑V core", accent: "green" },
-  { number: "32nm", label: "Technology node worked across all designs", accent: "cyan" },
+  { number: "14nm / 32nm", label: "Technology nodes worked across designs (FinFET & Planar)", accent: "cyan" },
   { number: "5", label: "Synopsys EDA tools in active workflow", accent: "amber" },
-  { number: "3/3", label: "Projects carried to clean DRC/LVS closure", accent: "green" },
+  { number: "4/4", label: "Projects carried to clean DRC/LVS closure", accent: "green" },
   { number: "2", label: "Custom macros implemented per core project", accent: "cyan" },
   { number: "🏆", label: "First Prize · IoT Project Expo (Home Automation)", accent: "amber" }
 ];

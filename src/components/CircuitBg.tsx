@@ -60,11 +60,17 @@ interface Shockwave {
   intensity: number;
 }
 
-export const CircuitBg: React.FC = () => {
+interface CircuitBgProps {
+  isPaused?: boolean;
+}
+
+export const CircuitBg: React.FC<CircuitBgProps> = ({ isPaused = false }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { theme } = useTheme();
   const themeRef = useRef(theme);
   themeRef.current = theme;
+  const isPausedRef = useRef(isPaused);
+  isPausedRef.current = isPaused;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -76,7 +82,7 @@ export const CircuitBg: React.FC = () => {
     let animationFrameId: number;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let dpr = Math.min(window.devicePixelRatio || 1, 1.5);
 
     const mouse = {
       x: -1000,
@@ -317,7 +323,7 @@ export const CircuitBg: React.FC = () => {
     const handleResize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
@@ -397,6 +403,16 @@ export const CircuitBg: React.FC = () => {
 
     const render = () => {
       animationFrameId = requestAnimationFrame(render);
+
+      // Instantly pause canvas rendering when a modal is open or browser tab is hidden
+      if (
+        isPausedRef.current ||
+        document.hidden ||
+        document.body.style.overflow === 'hidden'
+      ) {
+        return;
+      }
+
       const isLight = themeRef.current === 'light';
 
       if (mouse.targetX > -500) {
@@ -458,95 +474,109 @@ export const CircuitBg: React.FC = () => {
         ctx.fill();
       }
 
-      // 3. Update Nodes & Segments
+      // 3. Fast Update Nodes & Segments (AABB bounding box filtered)
       const closestNodesForArc: Node[] = [];
+      const mouseX = mouse.x;
+      const mouseY = mouse.y;
 
-      nodes.forEach((node) => {
-        let dist = 9999;
-        if (mouse.isNear) {
-          dist = Math.hypot(node.x - mouse.x, node.y - mouse.y);
-        }
-
-        let targetEnergy = 0;
-        if (dist < PROXIMITY_RADIUS) {
-          targetEnergy = Math.pow(1 - dist / PROXIMITY_RADIUS, 1.4);
-          if (dist < 60) {
-            closestNodesForArc.push(node);
+      if (mouse.isNear && mouseX > -100 && mouseX < width + 100 && mouseY > -100 && mouseY < height + 100) {
+        nodes.forEach((node) => {
+          if (Math.abs(node.x - mouseX) > PROXIMITY_RADIUS || Math.abs(node.y - mouseY) > PROXIMITY_RADIUS) {
+            node.energy = Math.max(0, node.energy * 0.96);
+            return;
           }
-        }
-
-        if (targetEnergy > node.energy) {
-          node.energy += (targetEnergy - node.energy) * 0.35;
-        } else {
-          node.energy += (targetEnergy - node.energy) * 0.04;
-        }
-      });
-
-      segments.forEach((seg, idx) => {
-        let dist = 9999;
-        if (mouse.isNear) {
-          dist = distToSegment(mouse.x, mouse.y, seg.x1, seg.y1, seg.x2, seg.y2);
-        }
-
-        let targetEnergy = 0;
-        if (dist < PROXIMITY_RADIUS) {
-          targetEnergy = Math.pow(1 - dist / PROXIMITY_RADIUS, 1.3);
-
-          if (targetEnergy > 0.4 && Math.random() < 0.05 * targetEnergy) {
-            spawnPulse(idx, true, targetEnergy);
+          const dist = Math.hypot(node.x - mouseX, node.y - mouseY);
+          let targetEnergy = 0;
+          if (dist < PROXIMITY_RADIUS) {
+            targetEnergy = Math.pow(1 - dist / PROXIMITY_RADIUS, 1.4);
+            if (dist < 60) closestNodesForArc.push(node);
           }
-        }
+          if (targetEnergy > node.energy) {
+            node.energy += (targetEnergy - node.energy) * 0.35;
+          } else {
+            node.energy += (targetEnergy - node.energy) * 0.04;
+          }
+        });
 
-        if (targetEnergy > seg.energy) {
-          seg.energy += (targetEnergy - seg.energy) * 0.3;
-        } else {
-          seg.energy += (targetEnergy - seg.energy) * 0.035;
-        }
-      });
+        segments.forEach((seg, idx) => {
+          const minX = Math.min(seg.x1, seg.x2) - PROXIMITY_RADIUS;
+          const maxX = Math.max(seg.x1, seg.x2) + PROXIMITY_RADIUS;
+          const minY = Math.min(seg.y1, seg.y2) - PROXIMITY_RADIUS;
+          const maxY = Math.max(seg.y1, seg.y2) + PROXIMITY_RADIUS;
 
-      // 4. Draw Circuit Traces
+          if (mouseX < minX || mouseX > maxX || mouseY < minY || mouseY > maxY) {
+            seg.energy = Math.max(0, seg.energy * 0.965);
+            return;
+          }
+
+          const dist = distToSegment(mouseX, mouseY, seg.x1, seg.y1, seg.x2, seg.y2);
+          let targetEnergy = 0;
+          if (dist < PROXIMITY_RADIUS) {
+            targetEnergy = Math.pow(1 - dist / PROXIMITY_RADIUS, 1.3);
+            if (targetEnergy > 0.4 && Math.random() < 0.05 * targetEnergy) {
+              spawnPulse(idx, true, targetEnergy);
+            }
+          }
+          if (targetEnergy > seg.energy) {
+            seg.energy += (targetEnergy - seg.energy) * 0.3;
+          } else {
+            seg.energy += (targetEnergy - seg.energy) * 0.035;
+          }
+        });
+      } else {
+        nodes.forEach((node) => { if (node.energy > 0.001) node.energy *= 0.94; });
+        segments.forEach((seg) => { if (seg.energy > 0.001) seg.energy *= 0.94; });
+      }
+
+      // 4. Draw Circuit Traces: Batch inactive base traces into a single draw call
+      ctx.beginPath();
       segments.forEach((seg) => {
-        const energy = seg.energy;
-        const isHot = energy > 0.04;
+        if (seg.isBaseTraced && seg.energy <= 0.04) {
+          ctx.moveTo(seg.x1, seg.y1);
+          ctx.lineTo(seg.x2, seg.y2);
+        }
+      });
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = isLight ? 'rgba(100, 116, 139, 0.12)' : 'rgba(51, 214, 240, 0.06)';
+      ctx.stroke();
 
-        ctx.beginPath();
-        ctx.moveTo(seg.x1, seg.y1);
-        ctx.lineTo(seg.x2, seg.y2);
-
-        if (isHot) {
-          ctx.save();
-          const alpha = isLight ? 0.15 + energy * 0.5 : 0.08 + energy * 0.4;
-          const lineWidth = 0.7 + energy * 0.8;
-          ctx.lineWidth = lineWidth;
+      // Draw active energized traces
+      segments.forEach((seg) => {
+        if (seg.energy > 0.04) {
+          ctx.beginPath();
+          ctx.moveTo(seg.x1, seg.y1);
+          ctx.lineTo(seg.x2, seg.y2);
+          const alpha = isLight ? 0.15 + seg.energy * 0.5 : 0.08 + seg.energy * 0.4;
+          ctx.lineWidth = 0.7 + seg.energy * 0.8;
           ctx.strokeStyle = isLight
             ? `rgba(2, 132, 199, ${alpha})`
             : `rgba(51, 214, 240, ${alpha})`;
-          if (energy > 0.3 && !isLight) {
-            ctx.shadowColor = '#33d6f0';
-            ctx.shadowBlur = energy * 7;
-          }
-          ctx.stroke();
-          ctx.restore();
-        } else if (seg.isBaseTraced) {
-          ctx.lineWidth = 0.5;
-          ctx.strokeStyle = isLight
-            ? 'rgba(100, 116, 139, 0.12)'
-            : 'rgba(51, 214, 240, 0.06)';
           ctx.stroke();
         }
       });
 
-      // 5. Draw Vias & Semiconductor Pads
+      // 5. Draw Vias & Semiconductor Pads (Batched)
+      // 5a. Inactive Vias batch
+      ctx.beginPath();
+      nodes.forEach((node) => {
+        if (node.energy <= 0.04 && node.type !== 'chip_pad') {
+          const radius = node.type === 'junction' ? 1.4 : 1.0;
+          ctx.moveTo(node.x + radius, node.y);
+          ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+        }
+      });
+      ctx.fillStyle = isLight ? 'rgba(100, 116, 139, 0.2)' : 'rgba(51, 214, 240, 0.08)';
+      ctx.fill();
+
+      // 5b. Active Nodes & Chip Pads
       nodes.forEach((node) => {
         const energy = node.energy;
         const isHot = energy > 0.04;
 
-        ctx.save();
         if (node.type === 'chip_pad') {
           const padSize = 2.8 + energy * 1.6;
           ctx.beginPath();
           ctx.rect(node.x - padSize / 2, node.y - padSize / 2, padSize, padSize);
-
           if (isHot) {
             ctx.fillStyle = isLight
               ? `rgba(5, 150, 105, ${0.3 + energy * 0.5})`
@@ -562,20 +592,13 @@ export const CircuitBg: React.FC = () => {
             ctx.fill();
             ctx.stroke();
           }
-        } else {
+        } else if (isHot) {
           const radius = (node.type === 'junction' ? 1.6 : 1.1) + energy * 1.0;
           ctx.beginPath();
           ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
-
-          if (isHot) {
-            ctx.fillStyle = isLight ? '#0284c7' : energy > 0.5 ? '#ffffff' : '#33d6f0';
-            ctx.fill();
-          } else {
-            ctx.fillStyle = isLight ? 'rgba(100, 116, 139, 0.2)' : 'rgba(51, 214, 240, 0.08)';
-            ctx.fill();
-          }
+          ctx.fillStyle = isLight ? '#0284c7' : energy > 0.5 ? '#ffffff' : '#33d6f0';
+          ctx.fill();
         }
-        ctx.restore();
       });
 
       // 6. Update & Draw Electric Pulses

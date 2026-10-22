@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, Cpu, Wrench, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { X, Cpu, Wrench, CheckCircle2, AlertTriangle, Zap, Clock, ShieldCheck } from 'lucide-react';
 import { Project } from '../types';
 
 interface ProjectModalProps {
@@ -27,13 +27,13 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
   if (!project) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
       
       {/* Click outside backdrop */}
       <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
       {/* Modal Dialog Card */}
-      <div className="relative w-full max-w-3xl bg-bgPanel2 border border-cyanDim/70 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-cyanNeon/10 z-10 my-8 overflow-hidden max-h-[90vh] flex flex-col">
+      <div className="relative w-full max-w-3xl bg-bgPanel2 border border-cyanDim/70 rounded-2xl p-5 sm:p-8 shadow-2xl shadow-cyanNeon/10 z-10 my-6 overflow-hidden max-h-[92vh] flex flex-col">
         
         {/* Top Accent Gradient Bar */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyanNeon via-greenNeon to-amberWarn" />
@@ -80,9 +80,52 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
             </p>
           </div>
 
-          {/* Key Metrics / Highlights */}
+          {/* Full PPA Engineering Scorecard */}
+          {project.ppa && (
+            <div>
+              <h4 className="font-mono text-xs uppercase tracking-widest text-textFaint mb-3 flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-amberWarn" />
+                Silicon PPA Scorecard (Performance, Power, Area)
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-3.5 rounded-xl bg-bgDark border border-line">
+                  <div className="flex items-center gap-2 text-xs font-mono text-cyanNeon mb-1">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Timing Closure (STA)</span>
+                  </div>
+                  <p className="text-xs text-textMain font-mono font-medium">{project.ppa.timing}</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-bgDark border border-line">
+                  <div className="flex items-center gap-2 text-xs font-mono text-greenNeon mb-1">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Physical Verification (DRC/LVS)</span>
+                  </div>
+                  <p className="text-xs text-textMain font-mono font-medium">{project.ppa.drcLvs}</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-bgDark border border-line">
+                  <div className="flex items-center gap-2 text-xs font-mono text-amberWarn mb-1">
+                    <Zap className="w-3.5 h-3.5" />
+                    <span>Area &amp; Wirelength</span>
+                  </div>
+                  <p className="text-xs text-textMain font-mono font-medium">{project.ppa.wirelength}</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-bgDark border border-line">
+                  <div className="flex items-center gap-2 text-xs font-mono text-cyanNeon mb-1">
+                    <Cpu className="w-3.5 h-3.5" />
+                    <span>Clock Skew &amp; CTS</span>
+                  </div>
+                  <p className="text-xs text-textMain font-mono font-medium">{project.ppa.skewTarget || '<80ps clock skew'}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Signoff Result Banner */}
           <div className="bg-bgDark/80 border border-line rounded-xl p-4">
-            <div className="font-mono text-xs text-greenNeon flex items-center gap-1.5 mb-2 font-semibold">
+            <div className="font-mono text-xs text-greenNeon flex items-center gap-1.5 mb-1.5 font-semibold">
               <CheckCircle2 className="w-4 h-4 text-greenNeon" />
               Signoff Result &amp; Metric:
             </div>

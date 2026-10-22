@@ -43,13 +43,19 @@
 
   html {
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 
-  /* Hide default operating system cursor so only the custom VLSI cursor is shown */
+  /* Hide default operating system cursor only when custom cursor is active; preserve native cursor on iframes */
   @media (pointer: fine) {
-    *, *::before, *::after {
-      cursor: none !important;
+    body.custom-cursor-active,
+    body.custom-cursor-active a,
+    body.custom-cursor-active button {
+      cursor: none;
+    }
+    iframe, .native-cursor {
+      cursor: auto !important;
     }
   }
 

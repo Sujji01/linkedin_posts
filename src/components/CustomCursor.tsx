@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 export const CustomCursor: React.FC = () => {
-  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -11,6 +10,8 @@ export const CustomCursor: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const followerRef = useRef<HTMLDivElement>(null);
   const mouseCoordsRef = useRef<{ x: number; y: number } | null>(null);
+  const isHoveredRef = useRef(false);
+  const isClickedRef = useRef(false);
   const isInitializedRef = useRef(false);
 
   useEffect(() => {
@@ -24,36 +25,69 @@ export const CustomCursor: React.FC = () => {
     let animationFrameId: number;
 
     const onMouseMove = (e: MouseEvent) => {
-      // Ignore invalid or 0,0 initial event before real movement
+      // Ignore invalid or negative events
       if (e.clientX <= 0 && e.clientY <= 0) return;
 
       if (!isInitializedRef.current) {
         followerX = e.clientX;
         followerY = e.clientY;
         isInitializedRef.current = true;
+        document.body.classList.add('custom-cursor-active');
+        setIsVisible(true);
       }
 
       mouseCoordsRef.current = { x: e.clientX, y: e.clientY };
-      setPosition({ x: e.clientX, y: e.clientY });
-      setIsVisible(true);
 
-      // Detect interactive elements
+      // Update cursor dot directly via DOM style transform for zero React overhead
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%) scale(${
+          isClickedRef.current ? 0.75 : 1
+        })`;
+      }
+
+      // Detect interactive elements without thrashing
       const target = e.target as HTMLElement | null;
-      const isInteractive = target?.closest('a, button, input, textarea, [role="button"], .cursor-pointer');
-      setIsHovered(!!isInteractive);
+      const isInteractive = !!target?.closest('a, button, input, textarea, [role="button"], .cursor-pointer');
+      if (isInteractive !== isHoveredRef.current) {
+        isHoveredRef.current = isInteractive;
+        setIsHovered(isInteractive);
+      }
     };
 
-    const onMouseDown = () => setIsClicked(true);
-    const onMouseUp = () => setIsClicked(false);
-    const onMouseLeave = () => setIsVisible(false);
-    const onMouseEnter = () => setIsVisible(true);
+    const onMouseDown = () => {
+      isClickedRef.current = true;
+      setIsClicked(true);
+      if (cursorRef.current && mouseCoordsRef.current) {
+        cursorRef.current.style.transform = `translate3d(${mouseCoordsRef.current.x}px, ${mouseCoordsRef.current.y}px, 0) translate(-50%, -50%) scale(0.75)`;
+      }
+    };
+
+    const onMouseUp = () => {
+      isClickedRef.current = false;
+      setIsClicked(false);
+      if (cursorRef.current && mouseCoordsRef.current) {
+        cursorRef.current.style.transform = `translate3d(${mouseCoordsRef.current.x}px, ${mouseCoordsRef.current.y}px, 0) translate(-50%, -50%) scale(1)`;
+      }
+    };
+
+    const onMouseLeave = () => {
+      document.body.classList.remove('custom-cursor-active');
+      setIsVisible(false);
+    };
+
+    const onMouseEnter = () => {
+      if (isInitializedRef.current) {
+        document.body.classList.add('custom-cursor-active');
+        setIsVisible(true);
+      }
+    };
 
     // Smooth follower interpolation loop (60fps)
     const animateFollower = () => {
       if (mouseCoordsRef.current && isInitializedRef.current) {
         const { x: targetX, y: targetY } = mouseCoordsRef.current;
-        followerX += (targetX - followerX) * 0.22;
-        followerY += (targetY - followerY) * 0.22;
+        followerX += (targetX - followerX) * 0.24;
+        followerY += (targetY - followerY) * 0.24;
 
         if (followerRef.current) {
           followerRef.current.style.transform = `translate3d(${followerX}px, ${followerY}px, 0) translate(-50%, -50%)`;
@@ -72,6 +106,7 @@ export const CustomCursor: React.FC = () => {
     animationFrameId = requestAnimationFrame(animateFollower);
 
     return () => {
+      document.body.classList.remove('custom-cursor-active');
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mouseup', onMouseUp);
@@ -81,14 +116,14 @@ export const CustomCursor: React.FC = () => {
     };
   }, []);
 
-  if (!isVisible || !position) return null;
+  if (!isVisible) return null;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[99999]" aria-hidden="true">
       {/* 1. Precision Center Probe Dot */}
       <div
         ref={cursorRef}
-        className={`fixed left-0 top-0 w-2 h-2 rounded-full -translate-x-1/2 -translate-y-1/2 transition-colors duration-150 ${
+        className={`fixed left-0 top-0 w-2 h-2 rounded-full -translate-x-1/2 -translate-y-1/2 transition-colors duration-150 will-change-transform ${
           isHovered
             ? isDark
               ? 'bg-greenNeon shadow-glow-green scale-125'
@@ -97,17 +132,12 @@ export const CustomCursor: React.FC = () => {
             ? 'bg-cyanNeon shadow-glow-cyan'
             : 'bg-cyanNeon border border-white shadow-[0_0_8px_rgba(2,132,199,0.6)]'
         }`}
-        style={{
-          transform: `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%) scale(${
-            isClicked ? 0.75 : 1
-          })`,
-        }}
       />
 
       {/* 2. VLSI EDA Layout Reticle / Target Cell Frame */}
       <div
         ref={followerRef}
-        className={`fixed left-0 top-0 transition-all duration-150 ease-out flex items-center justify-center ${
+        className={`fixed left-0 top-0 transition-all duration-150 ease-out flex items-center justify-center will-change-transform ${
           isHovered
             ? isDark
               ? 'w-10 h-10 border border-greenNeon/90 bg-greenNeon/10 shadow-[0_0_15px_rgba(79,224,168,0.4)]'

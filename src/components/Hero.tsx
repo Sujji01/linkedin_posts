@@ -5,7 +5,12 @@ import { LinkedInIcon, InstagramIcon } from './Icons';
 import { useGSAP } from '@gsap/react';
 import { gsap } from '../utils/gsap';
 
-export const Hero: React.FC = () => {
+interface HeroProps {
+  onOpenResume?: () => void;
+  onOpenRecruiter?: () => void;
+}
+
+export const Hero: React.FC<HeroProps> = ({ onOpenResume, onOpenRecruiter }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const dieRef = useRef<HTMLDivElement>(null);
   const leftColRef = useRef<HTMLDivElement>(null);
@@ -142,18 +147,16 @@ export const Hero: React.FC = () => {
       // Alternating Ping-Pong Clock Cycle for Pin Leads:
       // When Bank 0 (Even Pins) is Bright Glowing, Bank 1 (Odd Pins) is Softly Dimmed, and vice versa!
       
-      // Bank 0 (Even Pins): Bright Cyan/Green -> Dims Down -> Bright Cyan/Green
+      // Bank 0 (Even Pins): Bright Cyan -> Softly Dims Down
       gsap.fromTo(
         '.die-pin-bank-0',
         {
           stroke: 'rgb(var(--cyan))',
           opacity: 1,
-          filter: 'drop-shadow(0 0 10px rgba(var(--cyan), 0.95))',
         },
         {
           stroke: 'rgb(var(--line))',
           opacity: 0.25,
-          filter: 'drop-shadow(0 0 0px transparent)',
           duration: 3.2,
           repeat: -1,
           yoyo: true,
@@ -161,18 +164,16 @@ export const Hero: React.FC = () => {
         }
       );
 
-      // Bank 1 (Odd Pins): Softly Dimmed -> Bright Green/Amber -> Softly Dimmed (Exact Opposite Phase)
+      // Bank 1 (Odd Pins): Softly Dimmed -> Bright Green (Exact Opposite Phase)
       gsap.fromTo(
         '.die-pin-bank-1',
         {
           stroke: 'rgb(var(--line))',
           opacity: 0.25,
-          filter: 'drop-shadow(0 0 0px transparent)',
         },
         {
           stroke: 'rgb(var(--green))',
           opacity: 1,
-          filter: 'drop-shadow(0 0 10px rgba(var(--green), 0.95))',
           duration: 3.2,
           repeat: -1,
           yoyo: true,
@@ -191,13 +192,25 @@ export const Hero: React.FC = () => {
           {/* Left Hero Details (7 Cols) */}
           <div ref={leftColRef} className="lg:col-span-7 space-y-6">
             
-            {/* Status Badge */}
-            <div className="hero-badge inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-greenNeon/40 bg-greenNeon/10 text-greenNeon font-mono text-xs tracking-wider uppercase backdrop-blur-md shadow-sm shadow-greenNeon/10">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-greenNeon opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-greenNeon"></span>
-              </span>
-              <span>{PERSONAL_INFO.status}</span>
+            {/* Top Row: Status Badge & Recruiter Fast Track Trigger */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="hero-badge inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-greenNeon/40 bg-greenNeon/10 text-greenNeon font-mono text-xs tracking-wider uppercase backdrop-blur-md shadow-sm shadow-greenNeon/10">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-greenNeon opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-greenNeon"></span>
+                </span>
+                <span>{PERSONAL_INFO.status}</span>
+              </div>
+
+              {onOpenRecruiter && (
+                <button
+                  onClick={onOpenRecruiter}
+                  className="hero-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-amberWarn/40 bg-amberWarn/10 hover:bg-amberWarn/20 text-amberWarn font-mono text-xs tracking-wider uppercase backdrop-blur-md transition-all shadow-sm shadow-amberWarn/10 cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amberWarn" />
+                  <span className="font-semibold">⚡ Recruiter View (60s)</span>
+                </button>
+              )}
             </div>
 
             {/* Title & Name */}
@@ -222,35 +235,75 @@ export const Hero: React.FC = () => {
             </p>
 
             {/* Action Buttons */}
-            <div className="hero-ctas flex flex-wrap items-center gap-4 pt-2">
+            <div className="hero-ctas flex flex-wrap items-center gap-3 pt-2">
               <a
                 href="#projects"
-                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-lg font-mono text-xs sm:text-sm font-bold bg-gradient-to-r from-cyanNeon to-[#5be3f5] text-slate-950 hover:shadow-glow-cyan transition-all transform hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2.5 px-5 py-3 rounded-xl font-mono text-xs sm:text-sm font-bold bg-gradient-to-r from-cyanNeon to-[#5be3f5] text-slate-950 hover:shadow-glow-cyan transition-all transform hover:-translate-y-0.5"
               >
-                <span>View My Projects</span>
+                <span>View Projects &amp; PPA</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
+
+              {onOpenResume && (
+                <button
+                  onClick={onOpenResume}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-mono text-xs sm:text-sm font-medium text-cyanNeon border border-cyanDim bg-cyanNeon/10 hover:bg-cyanNeon/20 transition-all transform hover:-translate-y-0.5"
+                >
+                  <Sparkles className="w-4 h-4 text-cyanNeon" />
+                  <span>Preview Resume</span>
+                </button>
+              )}
 
               <a
                 href={PERSONAL_INFO.resumePath}
                 download
-                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-lg font-mono text-xs sm:text-sm font-medium text-textMain border border-line bg-bgPanel hover:border-cyanNeon hover:text-cyanNeon transition-all transform hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl font-mono text-xs sm:text-sm font-medium text-textMain border border-line bg-bgPanel hover:border-cyanNeon hover:text-cyanNeon transition-all transform hover:-translate-y-0.5"
+                title="Download CV PDF"
               >
                 <Download className="w-4 h-4 text-cyanNeon" />
-                <span>Download Resume</span>
+                <span className="hidden sm:inline">Download</span>
+                <span>CV</span>
               </a>
 
-              <a
-                href="#flow"
-                className="inline-flex items-center gap-2 px-4 py-3 rounded-lg font-mono text-xs font-medium text-textDim hover:text-textMain border border-transparent hover:border-lineSoft transition-colors"
-              >
-                <Sparkles className="w-4 h-4 text-amberWarn" />
-                <span>Explore PD Flow</span>
-              </a>
+              {onOpenRecruiter && (
+                <button
+                  onClick={onOpenRecruiter}
+                  className="inline-flex items-center gap-2 px-4 py-3 rounded-xl font-mono text-xs sm:text-sm font-medium text-amberWarn border border-amberWarn/30 bg-amberWarn/10 hover:bg-amberWarn/20 transition-all transform hover:-translate-y-0.5"
+                >
+                  <span>Recruiter Fast-Track</span>
+                </button>
+              )}
+            </div>
+
+            {/* Recruiter Fast-Facts Strip */}
+            <div className="hero-meta pt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5 border-t border-line/60">
+              <div className="p-2.5 rounded-lg bg-bgPanel/70 border border-line flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-cyanNeon shrink-0" />
+                <div className="text-xs font-mono truncate">
+                  <span className="text-textFaint block text-[10px]">TARGET ROLE</span>
+                  <span className="text-textMain font-medium">Physical Design / ASIC</span>
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-bgPanel/70 border border-line flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-greenNeon shrink-0" />
+                <div className="text-xs font-mono truncate">
+                  <span className="text-textFaint block text-[10px]">NODES &amp; TOOLS</span>
+                  <span className="text-textMain font-medium">14nm / 32nm · ICC2, FC</span>
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-bgPanel/70 border border-line flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-amberWarn shrink-0" />
+                <div className="text-xs font-mono truncate">
+                  <span className="text-textFaint block text-[10px]">SIGNOFF RECORD</span>
+                  <span className="text-textMain font-medium">4/4 Clean DRC &amp; LVS</span>
+                </div>
+              </div>
             </div>
 
             {/* Quick Meta Info Pills */}
-            <div className="hero-meta pt-4 flex flex-wrap items-center gap-y-2.5 gap-x-6 text-xs font-mono text-textDim border-t border-line/60">
+            <div className="pt-2 flex flex-wrap items-center gap-y-2.5 gap-x-6 text-xs font-mono text-textDim">
               <div className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-cyanNeon" />
                 <span>{PERSONAL_INFO.location}</span>
@@ -350,7 +403,7 @@ export const Hero: React.FC = () => {
                 <div className="absolute bottom-3 z-20 px-3 py-0.5 rounded-full bg-bgDark/90 backdrop-blur-md border border-cyanDim/80 flex items-center gap-1.5 shadow-lg">
                   <span className="w-1.5 h-1.5 rounded-full bg-greenNeon animate-pulse" />
                   <span className="font-mono text-[9.5px] font-semibold text-textMain tracking-widest uppercase">
-                    32NM · PHYSICAL DESIGN
+                    14NM / 32NM · PHYSICAL DESIGN
                   </span>
                 </div>
 

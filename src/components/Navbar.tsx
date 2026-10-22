@@ -13,7 +13,8 @@ import {
   Activity, 
   ChevronRight,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  BookOpen
 } from 'lucide-react';
 import { PERSONAL_INFO } from '../data/portfolioData';
 import { ThemeToggleSwitch } from './ThemeToggleSwitch';
@@ -27,55 +28,91 @@ interface NavItem {
   tag?: string;
 }
 
-const NAV_ITEMS: NavItem[] = [
+// All sections for the full drawer navigation
+const ALL_NAV_ITEMS: NavItem[] = [
   { number: '01', label: 'About', href: '#about', icon: User },
   { number: '02', label: 'Skills', href: '#skills', icon: Cpu },
   { number: '03', label: 'Experience', href: '#experience', icon: Briefcase },
   { number: '04', label: 'Projects', href: '#projects', icon: Layers },
-  { number: '05', label: 'Education', href: '#education', icon: GraduationCap },
-  { number: '06', label: 'Activities', href: '#activities', icon: Trophy },
-  { number: '07', label: 'PD Flow', href: '#flow', icon: Activity, tag: 'Interactive' },
-  { number: '08', label: 'Contact', href: '#contact', icon: Mail },
+  { number: '05', label: 'PD Flow', href: '#flow', icon: Activity },
+  { number: '06', label: 'Training Handbook', href: '#training', icon: BookOpen },
+  { number: '07', label: 'Education', href: '#education', icon: GraduationCap },
+  { number: '08', label: 'Activities', href: '#activities', icon: Trophy },
+  { number: '09', label: 'Contact', href: '#contact', icon: Mail },
 ];
 
-export const Navbar: React.FC = () => {
+// Clean, compact desktop navbar items to prevent any horizontal collision
+const DESKTOP_NAV_ITEMS = [
+  { label: 'About', href: '#about' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'PD Flow', href: '#flow' },
+  { label: 'Training', href: '#training' },
+  { label: 'Contact', href: '#contact' },
+];
+
+interface NavbarProps {
+  onOpenResume?: () => void;
+  onOpenRecruiter?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ 
+  onOpenResume, 
+  onOpenRecruiter 
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('about');
+  const [activeSection, setActiveSection] = useState('');
 
-  // Track active section and header scroll styling with high precision
+  // Precise scroll position tracking and active section highlighting (throttled with rAF)
   useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+
+    const updateScroll = () => {
       setIsScrolled(window.scrollY > 20);
 
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       const docHeight = document.documentElement.scrollHeight;
 
-      // Bottom of page detection -> highlight Contact
-      if (windowHeight + scrollY >= docHeight - 80) {
-        setActiveSection('contact');
+      // When near top (Hero section), no internal section is active
+      if (scrollY < 240) {
+        setActiveSection('');
+        ticking = false;
         return;
       }
 
-      const sections = NAV_ITEMS.map((item) => item.href.substring(1));
+      // Bottom of page detection -> highlight Contact
+      if (windowHeight + scrollY >= docHeight - 80) {
+        setActiveSection('contact');
+        ticking = false;
+        return;
+      }
+
+      const sections = ALL_NAV_ITEMS.map((item) => item.href.substring(1));
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
         if (el) {
           const rect = el.getBoundingClientRect();
-          // Active when section top enters viewport upper area
-          if (rect.top <= windowHeight * 0.38) {
+          if (rect.top <= windowHeight * 0.4) {
             setActiveSection(sections[i]);
             break;
           }
         }
       }
+      ticking = false;
     };
 
-    // Run once on load to set correct initial active section
-    handleScroll();
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateScroll);
+      }
+    };
 
+    updateScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -99,11 +136,21 @@ export const Navbar: React.FC = () => {
     };
   }, [sideDrawerOpen]);
 
+  // Accurate smooth scrolling with fixed header offset compensation
   const handleNavClick = (href: string) => {
     setSideDrawerOpen(false);
+    if (href === '#' || href === '#top') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     const element = document.querySelector(href);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const headerOffset = 76;
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: Math.max(0, elementPosition - headerOffset),
+        behavior: 'smooth',
+      });
     }
   };
 
@@ -113,17 +160,23 @@ export const Navbar: React.FC = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'bg-bgDark/85 backdrop-blur-md border-b border-line shadow-lg shadow-black/20 py-3.5'
-            : 'bg-transparent border-b border-transparent py-5'
+            ? 'bg-bgDark/90 backdrop-blur-md border-b border-line shadow-lg shadow-black/25 py-2.5 sm:py-3'
+            : 'bg-transparent border-b border-transparent py-3.5 sm:py-5'
         }`}
       >
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 xl:gap-6">
-          {/* Logo (Left) */}
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
+          
+          {/* Brand Logo (Left) */}
           <a
             href="#"
-            className="flex items-center gap-2.5 font-mono font-bold text-sm tracking-wider text-textMain group flex-shrink-0"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="flex items-center gap-2 font-mono font-bold text-sm tracking-wider text-textMain group shrink-0"
+            title="Scroll to top"
           >
-            <div className="w-7 h-7 rounded-md bg-bgPanel border border-cyanDim flex items-center justify-center group-hover:border-cyanNeon transition-colors shadow-sm">
+            <div className="w-8 h-8 rounded-lg bg-bgPanel border border-cyanDim flex items-center justify-center group-hover:border-cyanNeon group-hover:shadow-glow-cyan/20 transition-all shadow-sm">
               <Cpu className="w-4 h-4 text-cyanNeon group-hover:rotate-45 transition-transform duration-300" />
             </div>
             <span className="tracking-widest">
@@ -131,9 +184,9 @@ export const Navbar: React.FC = () => {
             </span>
           </a>
 
-          {/* Desktop Nav Links (Compact Spacing) */}
-          <div className="hidden lg:flex items-center justify-center flex-1 gap-2 xl:gap-3 2xl:gap-4 px-2 min-w-0">
-            {NAV_ITEMS.map((item) => {
+          {/* Desktop Nav Links (Visible on >= lg screens, perfectly sized) */}
+          <div className="hidden lg:flex items-center justify-center gap-1 xl:gap-2 px-1 min-w-0">
+            {DESKTOP_NAV_ITEMS.map((item) => {
               const sectionId = item.href.substring(1);
               const isActive = activeSection === sectionId;
 
@@ -141,93 +194,112 @@ export const Navbar: React.FC = () => {
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item.href)}
-                  className={`font-mono text-xs uppercase tracking-wider transition-all duration-200 px-2 py-1 rounded relative flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
+                  className={`font-mono text-xs uppercase tracking-wider transition-all duration-200 px-2.5 xl:px-3 py-1.5 rounded-lg relative whitespace-nowrap shrink-0 cursor-pointer ${
                     isActive
-                      ? 'text-cyanNeon font-semibold bg-cyanNeon/5'
+                      ? 'text-cyanNeon font-semibold bg-cyanNeon/10 shadow-sm shadow-cyanNeon/10'
                       : 'text-textDim hover:text-cyanNeon hover:bg-bgPanel/60'
                   }`}
                 >
                   <span>{item.label}</span>
-                  {item.tag && (
-                    <span className="text-[9px] px-1 py-0.2 rounded bg-cyanNeon/10 text-cyanNeon border border-cyanDim/40 font-mono">
-                      {item.tag}
-                    </span>
-                  )}
                   {isActive && (
-                    <span className="absolute bottom-0 left-1 right-1 h-[2px] bg-cyanNeon rounded-full shadow-glow-cyan" />
+                    <span className="absolute bottom-0 left-2 right-2 h-[2px] bg-cyanNeon rounded-full shadow-glow-cyan" />
                   )}
                 </button>
               );
             })}
           </div>
 
-          {/* Right Actions */}
-          <div className="hidden sm:flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
+          {/* Right Action Controls */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             {/* Theme Toggle Switch */}
             <ThemeToggleSwitch />
 
-            {/* CV Download */}
-            <a
-              href={PERSONAL_INFO.resumePath}
-              download
-              className="flex items-center gap-1.5 font-mono text-xs text-textDim hover:text-textMain px-3 py-1.5 rounded-lg border border-line hover:border-lineSoft transition-colors bg-bgPanel/50"
-            >
-              <Download className="w-3.5 h-3.5 text-cyanNeon" />
-              <span>CV</span>
-            </a>
+            {/* Recruiter Fast Track CTA (desktop xl+) */}
+            {onOpenRecruiter && (
+              <button
+                onClick={onOpenRecruiter}
+                className="hidden xl:inline-flex items-center gap-1.5 font-mono text-xs text-amberWarn bg-amberWarn/10 border border-amberWarn/30 hover:bg-amberWarn/20 hover:border-amberWarn px-2.5 py-1.5 rounded-lg transition-all font-semibold cursor-pointer shrink-0"
+                title="60-Second Recruiter Fast Track"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amberWarn" />
+                <span>Recruiter View</span>
+              </button>
+            )}
 
-            {/* Hire Me CTA */}
+            {/* Resume Button */}
+            {onOpenResume ? (
+              <button
+                onClick={onOpenResume}
+                className="hidden sm:inline-flex items-center gap-1.5 font-mono text-xs text-textDim hover:text-cyanNeon hover:border-cyanNeon px-3 py-1.5 rounded-lg border border-line hover:border-lineSoft transition-colors bg-bgPanel/50 cursor-pointer shrink-0"
+                title="Preview Resume"
+              >
+                <Download className="w-3.5 h-3.5 text-cyanNeon" />
+                <span>Resume</span>
+              </button>
+            ) : (
+              <a
+                href={PERSONAL_INFO.resumePath}
+                download
+                className="hidden sm:inline-flex items-center gap-1.5 font-mono text-xs text-textDim hover:text-textMain px-3 py-1.5 rounded-lg border border-line hover:border-lineSoft transition-colors bg-bgPanel/50 shrink-0"
+              >
+                <Download className="w-3.5 h-3.5 text-cyanNeon" />
+                <span>CV</span>
+              </a>
+            )}
+
+            {/* Hire Me CTA (hidden on small mobile to ensure zero overlap) */}
             <a
               href={`mailto:${PERSONAL_INFO.email}`}
-              className="flex items-center gap-1.5 font-mono text-xs text-cyanNeon bg-cyanNeon/10 border border-cyanDim hover:bg-cyanNeon/20 hover:border-cyanNeon px-3.5 py-1.5 rounded-lg transition-all shadow-sm shadow-cyanNeon/10 font-semibold"
+              className="hidden md:inline-flex items-center gap-1.5 font-mono text-xs text-cyanNeon bg-cyanNeon/10 border border-cyanDim hover:bg-cyanNeon/20 hover:border-cyanNeon px-3.5 py-1.5 rounded-lg transition-all shadow-sm shadow-cyanNeon/10 font-semibold shrink-0"
             >
               <Mail className="w-3.5 h-3.5" />
               <span>Hire Me</span>
             </a>
 
-            {/* Drawer Toggle for Tablet (< lg) */}
+            {/* Mobile Recruiter Fast Track Sparkle (< xl) */}
+            {onOpenRecruiter && (
+              <button
+                onClick={onOpenRecruiter}
+                className="xl:hidden p-1.5 rounded-lg bg-amberWarn/10 border border-amberWarn/30 text-amberWarn font-mono text-xs cursor-pointer hover:bg-amberWarn/20 transition-colors"
+                title="Recruiter Fast Track (60s)"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+              </button>
+            )}
+
+            {/* Mobile / Tablet Drawer Toggle Button (< lg screens) */}
             <button
               onClick={() => setSideDrawerOpen(true)}
-              className="lg:hidden p-2 text-cyanNeon border border-cyanDim/60 rounded-md bg-bgPanel hover:bg-cyanNeon/10 transition-colors ml-1"
-              aria-label="Open side menu"
+              className="lg:hidden p-2 text-cyanNeon border border-cyanDim/70 rounded-lg bg-bgPanel hover:bg-cyanNeon/10 transition-colors cursor-pointer"
+              aria-label="Open navigation menu"
             >
               <Menu className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Mobile Right Controls (< sm) */}
-          <div className="flex sm:hidden items-center gap-2">
-            <ThemeToggleSwitch />
-            <button
-              onClick={() => setSideDrawerOpen(true)}
-              className="p-2 text-cyanNeon border border-cyanDim/60 rounded-md bg-bgPanel hover:bg-cyanNeon/10 transition-colors"
-              aria-label="Open side menu"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-          </div>
         </nav>
       </header>
 
-      {/* Side-Expanding Sidebar Drawer Overlay */}
+      {/* Side-Expanding Navigation Drawer Overlay */}
       {sideDrawerOpen && (
         <div className="fixed inset-0 z-[100] flex justify-end">
-          {/* Backdrop Blur Overlay */}
+          {/* Backdrop Blur */}
           <div
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in"
+            className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in"
             onClick={() => setSideDrawerOpen(false)}
             aria-hidden="true"
           />
 
           {/* Slide-In Sidebar Panel */}
-          <div className="relative w-full max-w-md bg-bgPanel2 border-l border-cyanDim/50 h-full shadow-2xl z-10 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
+          <div className="relative w-full max-w-sm sm:max-w-md bg-bgPanel2 border-l border-cyanDim/50 h-full shadow-2xl z-10 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
             
             {/* Top Accent Strip */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyanNeon via-greenNeon to-amberWarn" />
 
-            {/* Drawer Header */}
+            {/* Drawer Top Content */}
             <div>
-              <div className="p-6 border-b border-line flex items-center justify-between gap-4">
+              {/* Header */}
+              <div className="p-5 sm:p-6 border-b border-line flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-bgDark border border-cyanDim flex items-center justify-center text-cyanNeon shadow-sm">
                     <Cpu className="w-5 h-5 animate-pulse" />
@@ -253,7 +325,7 @@ export const Navbar: React.FC = () => {
               </div>
 
               {/* Status Badge */}
-              <div className="mx-6 mt-4 p-3 rounded-xl bg-bgDark/80 border border-line flex items-center justify-between text-xs font-mono">
+              <div className="mx-5 sm:mx-6 mt-4 p-3 rounded-xl bg-bgDark/80 border border-line flex items-center justify-between text-xs font-mono">
                 <span className="text-textDim flex items-center gap-2">
                   <Sparkles className="w-3.5 h-3.5 text-cyanNeon" />
                   Status:
@@ -265,11 +337,11 @@ export const Navbar: React.FC = () => {
               </div>
 
               {/* Navigation Menu List */}
-              <div className="px-4 py-4 space-y-1">
+              <div className="px-3 sm:px-4 py-4 space-y-1">
                 <div className="px-3 pb-2 font-mono text-[10px] uppercase tracking-widest text-textFaint">
-                  Quick Navigation
+                  All Sections
                 </div>
-                {NAV_ITEMS.map((item) => {
+                {ALL_NAV_ITEMS.map((item) => {
                   const IconComponent = item.icon;
                   const sectionId = item.href.substring(1);
                   const isActive = activeSection === sectionId;
@@ -278,7 +350,7 @@ export const Navbar: React.FC = () => {
                     <button
                       key={item.label}
                       onClick={() => handleNavClick(item.href)}
-                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all group ${
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all group cursor-pointer ${
                         isActive
                           ? 'bg-cyanNeon/15 text-cyanNeon border border-cyanNeon/60 font-semibold shadow-sm shadow-cyanNeon/10'
                           : 'text-textDim hover:text-textMain hover:bg-bgDark/70 hover:border-line border border-transparent'
@@ -309,23 +381,44 @@ export const Navbar: React.FC = () => {
             </div>
 
             {/* Drawer Footer Actions & Socials */}
-            <div className="p-6 border-t border-line bg-bgDark/50 space-y-4">
-              {/* Theme Toggle Bar */}
-              <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-bgPanel border border-line">
-                <span className="font-mono text-xs text-textDim">Theme Mode</span>
-                <ThemeToggleSwitch showLabel />
-              </div>
-
-              {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-3">
-                <a
-                  href={PERSONAL_INFO.resumePath}
-                  download
-                  className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-line bg-bgPanel hover:border-cyanDim text-textMain font-mono text-xs font-semibold transition-all hover:bg-cyanNeon/5"
+            <div className="p-5 sm:p-6 border-t border-line bg-bgDark/50 space-y-3">
+              {/* Recruiter Fast Track Button */}
+              {onOpenRecruiter && (
+                <button
+                  onClick={() => {
+                    setSideDrawerOpen(false);
+                    onOpenRecruiter();
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-amberWarn/40 bg-amberWarn/10 text-amberWarn font-mono text-xs font-semibold cursor-pointer hover:bg-amberWarn/20 transition-colors"
                 >
-                  <Download className="w-3.5 h-3.5 text-cyanNeon" />
-                  <span>Resume</span>
-                </a>
+                  <Sparkles className="w-3.5 h-3.5 text-amberWarn" />
+                  <span>⚡ Recruiter Fast Track (60s)</span>
+                </button>
+              )}
+
+              {/* Action Buttons: Resume & Hire Me */}
+              <div className="grid grid-cols-2 gap-3">
+                {onOpenResume ? (
+                  <button
+                    onClick={() => {
+                      setSideDrawerOpen(false);
+                      onOpenResume();
+                    }}
+                    className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-line bg-bgPanel hover:border-cyanDim text-textMain font-mono text-xs font-semibold transition-all hover:bg-cyanNeon/5 cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5 text-cyanNeon" />
+                    <span>Resume</span>
+                  </button>
+                ) : (
+                  <a
+                    href={PERSONAL_INFO.resumePath}
+                    download
+                    className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-line bg-bgPanel hover:border-cyanDim text-textMain font-mono text-xs font-semibold transition-all hover:bg-cyanNeon/5"
+                  >
+                    <Download className="w-3.5 h-3.5 text-cyanNeon" />
+                    <span>Resume</span>
+                  </a>
+                )}
 
                 <a
                   href={`mailto:${PERSONAL_INFO.email}`}
@@ -359,4 +452,3 @@ export const Navbar: React.FC = () => {
     </>
   );
 };
-
